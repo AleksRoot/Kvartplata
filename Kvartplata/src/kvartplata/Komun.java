@@ -13,36 +13,33 @@ import javax.swing.JOptionPane;
 
 public class Komun extends javax.swing.JFrame {
 
-    Counter counter;
-    Scanner robot = new Scanner(System.in);
-
-    public String names(){
+    public void names() {
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
         String password = "sasha";//Пароль пользователя
         String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
-        String poslyga1 = null;
-       try{
-           Class.forName(driver);
-       //Регистрируем драйвер
-        Connection c = null;//Соединение с БД
-        c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
-        Statement st = c.createStatement();//Готовим запрос
-         String name1 = "SELECT назва FROM SASHA.KOMYNPOSLYGU WHERE номер = 1";
-        ResultSet rs = st.executeQuery(name1);
-        rs.next();
-       poslyga1 = rs.getString("назва");
-       }
-       catch (Exception e){}
-       
-        return poslyga1;
+
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String name1 = "SELECT назва FROM SASHA.KOMYNPOSLYGU";
+            ResultSet rs = st.executeQuery(name1);
+            int i = 0;
+            while (rs.next()) {
+                model.add(i++, rs.getString("назва"));
+            }
+        } catch (Exception e) {
+        }
+
     }
 
     public Komun() {
-       String a = names();
-        double водаХолТуалет[] = new double[3];
+
         model = new DefaultListModel<String>();
-        model.add(0, a);
+        names();
         initComponents();
     }
 
