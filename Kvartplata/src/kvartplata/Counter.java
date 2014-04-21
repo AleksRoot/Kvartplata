@@ -22,7 +22,7 @@ import javax.swing.*;
  * @author Саша
  */
 public class Counter extends javax.swing.JFrame {
-Scanner robot = new Scanner(System.in);
+
    
 
     public void dataBase(String query) throws ClassNotFoundException, SQLException {
@@ -38,15 +38,17 @@ Scanner robot = new Scanner(System.in);
         st.execute(query);
        
     }
-    private DefaultListModel<String> model;
+    private DefaultListModel<KomynPoslygu> model;
 
     /**
      * Creates new form Counter
      */
-    public Counter(DefaultListModel<String> model) {
+    public Counter(DefaultListModel<KomynPoslygu> model) {
         initComponents();
         this.model = model;
+        
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.

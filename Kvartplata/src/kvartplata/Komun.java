@@ -25,20 +25,27 @@ public class Komun extends javax.swing.JFrame {
             Connection c = null;//Соединение с БД
             c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
             Statement st = c.createStatement();//Готовим запрос
-            String name1 = "SELECT назва FROM SASHA.KOMYNPOSLYGU";
+            String name1 = "SELECT * FROM SASHA.KOMYNPOSLYGU";
             ResultSet rs = st.executeQuery(name1);
             int i = 0;
             while (rs.next()) {
-                model.add(i++, rs.getString("назва"));
+                KomynPoslygu a = new KomynPoslygu();
+                a.Id=rs.getInt("НОМЕР");
+                a.Name=rs.getString("НАЗВА");
+                a.LichKinc=rs.getDouble("ЛІЧИЛЬНИККІНЦЕВИЙ");
+                a.LichPoch=rs.getDouble("ЛІЧИЛЬНИКПОЧАТКОВИЙ");
+                a.Taruf=rs.getDouble("ТАРИФ");
+                model.add(i++, a);
             }
         } catch (Exception e) {
+            String a = e.getMessage();
         }
 
     }
 
     public Komun() {
 
-        model = new DefaultListModel<String>();
+        model = new DefaultListModel<KomynPoslygu>();
         names();
         initComponents();
     }
@@ -100,15 +107,14 @@ public class Komun extends javax.swing.JFrame {
 
     private void serviceListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_serviceListMouseClicked
         if (evt.getClickCount() == 2) {
-            //JOptionPane.showMessageDialog(null, "Clicked");
+            
             Counter dialog = new Counter(model);
-            dialog.setVisible(true);
-            //JOptionPane.showMessageDialog(null, dialog.nameText);
+            dialog.setVisible(true);          
         }
     }//GEN-LAST:event_serviceListMouseClicked
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        model.add(0, "послуга");
+        //model.add(0, "послуга");
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
@@ -157,7 +163,7 @@ public class Komun extends javax.swing.JFrame {
     private javax.swing.JButton addButton;
     private javax.swing.JButton deleteButton;
     private javax.swing.JScrollPane jScrollPane1;
-    private DefaultListModel<String> model;
+    private DefaultListModel<KomynPoslygu> model;
     private javax.swing.JList serviceList;
     // End of variables declaration//GEN-END:variables
 }
