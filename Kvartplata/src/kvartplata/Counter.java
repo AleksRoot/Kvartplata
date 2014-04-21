@@ -77,7 +77,6 @@ Scanner robot = new Scanner(System.in);
             }
         });
 
-        taruf.setEditable(false);
         taruf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tarufActionPerformed(evt);
@@ -113,13 +112,14 @@ Scanner robot = new Scanner(System.in);
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        double lichulnukKincevuj = 120,
-                lichulnukPochatkovuj = 118,
-                taruf = 2.74;
+      
+        double lichulnukKincevuj = Double.parseDouble( lichKinc.getText()) ,
+                lichulnukPochatkovuj = Double.parseDouble( lichPoch.getText()),
+                taruf1 = Double.parseDouble( taruf.getText());
                 String queryTemplate = "UPDATE KOMYNPOSLYGU SET ЛІЧИЛЬНИККІНЦЕВИЙ = %.2f, ЛІЧИЛЬНИКПОЧАТКОВИЙ = %.2f,"
                         + " ТАРИФ = %.2f WHERE номер = 1";
    
-        String query = String.format(Locale.US, queryTemplate, lichulnukKincevuj, lichulnukPochatkovuj, taruf);
+        String query = String.format(Locale.US, queryTemplate, lichulnukKincevuj, lichulnukPochatkovuj, taruf1);
         try {
             dataBase(query);
         } catch (ClassNotFoundException ex) {
