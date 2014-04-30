@@ -35,7 +35,8 @@ public class Counter extends javax.swing.JFrame {
         Connection c = null;//Соединение с БД
         c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
         Statement st = c.createStatement();//Готовим запрос
-        st.execute(query);
+        st.executeUpdate(query);
+        //st.execute(query);
        
     }
     private DefaultListModel<KomynPoslygu> model;
@@ -114,14 +115,19 @@ public class Counter extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-      
+     
+        KomynPoslygu a = new KomynPoslygu();
+     //int id = Integer.parseInt(Id.getText());
+        String nazva = a.Name;
         double lichulnukKincevuj = Double.parseDouble( lichKinc.getText()) ,
                 lichulnukPochatkovuj = Double.parseDouble( lichPoch.getText()),
                 taruf1 = Double.parseDouble( taruf.getText());
-                String queryTemplate = "UPDATE KOMYNPOSLYGU SET ЛІЧИЛЬНИККІНЦЕВИЙ = %.2f, ЛІЧИЛЬНИКПОЧАТКОВИЙ = %.2f,"
-                        + " ТАРИФ = %.2f WHERE номер = 1";
+        
+       String queryTemplate= "INSERT INTO SASHA.KOMYNPOSLYGU " +
+                   "VALUES ( %d, %s, %.2f, %.2f, %.2f)";
+     
    
-        String query = String.format(Locale.US, queryTemplate, lichulnukKincevuj, lichulnukPochatkovuj, taruf1);
+        String query = String.format(Locale.US, queryTemplate, nazva,  lichulnukKincevuj, lichulnukPochatkovuj, taruf1);
         try {
             dataBase(query);
         } catch (ClassNotFoundException ex) {

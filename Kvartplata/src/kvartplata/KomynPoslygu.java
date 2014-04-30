@@ -16,7 +16,8 @@ public class KomynPoslygu extends Object {
     public double LichKinc;
     public double LichPoch;
     public double Taruf;
-
+//UPDATE SASHA.KOMYNPOSLYGU SET Сума = (ЛІЧИЛЬНИККІНЦЕВИЙ - ЛІЧИЛЬНИКПОЧАТКОВИЙ)*ТАРИФ;
+//select * from SASHA.KOMYNPOSLYGU;
 
     @Override
     public String toString() {
