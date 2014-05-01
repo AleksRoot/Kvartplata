@@ -87,7 +87,7 @@ public class flat extends javax.swing.JFrame {
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
       newFlat nf = new newFlat();
       nf.setVisible(true);
-       String name1 = "name";
+      model.addElement(nf.name());
     //  model.addElement(name1);
       //serviceList.setModel(model);
        

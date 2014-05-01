@@ -20,6 +20,7 @@ public class newFlat extends javax.swing.JFrame {
      f.model.addElement(name);
      return name;
 }
+   
     public newFlat() {
         
         initComponents();
