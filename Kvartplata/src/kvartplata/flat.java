@@ -17,7 +17,7 @@ import javax.swing.JScrollPane;
  * @author Саша
  */
 public class flat extends javax.swing.JFrame {
-    private DefaultListModel listModel;
+    public DefaultListModel model = new DefaultListModel();
 
     /**
      * Creates new form flat
@@ -25,6 +25,7 @@ public class flat extends javax.swing.JFrame {
     public flat() {
          
         initComponents();
+        serviceList.setModel(model);
     }
 
     /**
@@ -84,12 +85,12 @@ public class flat extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-       listModel = new DefaultListModel();
-        listModel.addElement("Элемент 1");
-        JList list = new JList(listModel);
-        JPanel mainPanel = new JPanel();
-        mainPanel.add(new JScrollPane(list), BorderLayout.CENTER);
-       // serviceList
+      newFlat nf = new newFlat();
+      nf.setVisible(true);
+       String name1 = "name";
+    //  model.addElement(name1);
+      //serviceList.setModel(model);
+       
     
      
       
@@ -128,6 +129,7 @@ public class flat extends javax.swing.JFrame {
             public void run() {
                 
                 new flat().setVisible(true);
+                
             }
         });
     }

@@ -13,10 +13,13 @@ import javax.swing.DefaultListModel;
  * @author Саша
  */
 public class newFlat extends javax.swing.JFrame {
-
-    /**
-     * Creates new form newFlat
-     */
+    flat f = new flat();
+    
+   public String name(){
+ String name = "new name";
+     f.model.addElement(name);
+     return name;
+}
     public newFlat() {
         
         initComponents();
@@ -113,6 +116,10 @@ public class newFlat extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+    //  String name = "new name";
+    // f.model.addElement(name);
+      
+      
       
       this.setVisible(false);
  
@@ -123,7 +130,8 @@ public class newFlat extends javax.swing.JFrame {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void newNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newNameActionPerformed
-     String newname = newName.getText();
+     
+//String newname = newName.getText();
     
     }//GEN-LAST:event_newNameActionPerformed
 
@@ -170,4 +178,5 @@ public class newFlat extends javax.swing.JFrame {
     private javax.swing.JTextField newName;
     private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
+
 }
