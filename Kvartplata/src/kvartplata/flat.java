@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package kvartplata;
 
 import java.awt.BorderLayout;
@@ -17,15 +16,22 @@ import javax.swing.JScrollPane;
  * @author Саша
  */
 public class flat extends javax.swing.JFrame {
+
+    
     public DefaultListModel model = new DefaultListModel();
 
-    /**
-     * Creates new form flat
-     */
-    public flat() {
-         
-        initComponents();
+    public void setmodel() {
+        addFlat af = new addFlat();
+        model.addElement(af.name());
         serviceList.setModel(model);
+        
+
+    }
+
+    public flat() {
+
+        initComponents();
+
     }
 
     /**
@@ -85,22 +91,16 @@ public class flat extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-      newFlat nf = new newFlat();
-      nf.setVisible(true);
-      model.addElement(nf.name());
-    //  model.addElement(name1);
-      //serviceList.setModel(model);
-       
-    
-     
-      
+        addFlat af2 = new addFlat();
+        af2.setVisible(true);
+
     }//GEN-LAST:event_addButtonActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        
+
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -127,9 +127,9 @@ public class flat extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                
+
                 new flat().setVisible(true);
-                
+
             }
         });
     }

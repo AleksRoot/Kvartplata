@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 
 public class Komun extends javax.swing.JFrame {
 
+
     public void names() {
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя

@@ -12,16 +12,12 @@ import javax.swing.DefaultListModel;
  *
  * @author Саша
  */
-public class newFlat extends javax.swing.JFrame {
+public class addFlat extends javax.swing.JFrame {
     flat f = new flat();
     
-   public String name(){
- String name = "new name";
-     f.model.addElement(name);
-     return name;
-}
    
-    public newFlat() {
+   
+    public addFlat() {
         
         initComponents();
     }
@@ -53,6 +49,14 @@ public class newFlat extends javax.swing.JFrame {
         newName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newNameActionPerformed(evt);
+            }
+        });
+        newName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                newNameKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                newNameKeyTyped(evt);
             }
         });
 
@@ -117,11 +121,9 @@ public class newFlat extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-    //  String name = "new name";
-    // f.model.addElement(name);
       
-      
-      
+      String name = newName.getText();
+      f.setmodel();
       this.setVisible(false);
  
     }//GEN-LAST:event_okButtonActionPerformed
@@ -132,10 +134,22 @@ public class newFlat extends javax.swing.JFrame {
 
     private void newNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newNameActionPerformed
      
-//String newname = newName.getText();
+
     
     }//GEN-LAST:event_newNameActionPerformed
 
+    private void newNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_newNameKeyPressed
+       
+    }//GEN-LAST:event_newNameKeyPressed
+
+    private void newNameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_newNameKeyTyped
+       
+    }//GEN-LAST:event_newNameKeyTyped
+public  String name(){
+     //String name = "new name";
+     String name = newName.getText();
+     return name;
+}
     /**
      * @param args the command line arguments
      */
@@ -153,20 +167,20 @@ public class newFlat extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(newFlat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(addFlat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(newFlat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(addFlat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(newFlat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(addFlat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(newFlat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(addFlat.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new newFlat().setVisible(true);
+                new addFlat().setVisible(true);
             }
         });
     }
