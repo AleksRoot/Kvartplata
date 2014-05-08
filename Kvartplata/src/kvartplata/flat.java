@@ -16,15 +16,15 @@ import javax.swing.JScrollPane;
  * @author Саша
  */
 public class flat extends javax.swing.JFrame {
-
+addFlat af;
     
     public DefaultListModel model = new DefaultListModel();
 
     public void setmodel() {
-        addFlat af = new addFlat();
-        model.addElement(af.name());
+       
+        model.addElement(af.names());
         serviceList.setModel(model);
-        
+       
 
     }
 
@@ -47,12 +47,13 @@ public class flat extends javax.swing.JFrame {
         serviceList = new javax.swing.JList();
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
+        addToList = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jScrollPane1.setViewportView(serviceList);
 
-        addButton.setText("add");
+        addButton.setText("addName");
         addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addButtonActionPerformed(evt);
@@ -61,27 +62,37 @@ public class flat extends javax.swing.JFrame {
 
         deleteButton.setText("delete");
 
+        addToList.setText("addToList");
+        addToList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addToListActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(addButton)
+                        .addGap(83, 83, 83)
+                        .addComponent(addToList)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(deleteButton)))
-                .addContainerGap())
+                .addGap(0, 12, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addToList)
                     .addComponent(addButton)
                     .addComponent(deleteButton))
                 .addContainerGap())
@@ -91,10 +102,18 @@ public class flat extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-        addFlat af2 = new addFlat();
-        af2.setVisible(true);
+         af = new addFlat();
+          af.setVisible(true);
+       
 
     }//GEN-LAST:event_addButtonActionPerformed
+
+    private void addToListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addToListActionPerformed
+        setmodel();
+       
+        
+       
+    }//GEN-LAST:event_addToListActionPerformed
 
     /**
      * @param args the command line arguments
@@ -136,6 +155,7 @@ public class flat extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
+    private javax.swing.JButton addToList;
     private javax.swing.JButton deleteButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList serviceList;
