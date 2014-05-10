@@ -122,6 +122,7 @@ public class addFlat extends javax.swing.JFrame {
      // flat f = new flat();
       //f.model.addElement(name);
       //f.setmodel();
+      
       this.setVisible(false);
       
       
