@@ -6,6 +6,11 @@
 package kvartplata;
 
 import java.awt.BorderLayout;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -17,21 +22,40 @@ import javax.swing.JScrollPane;
  */
 public class flat extends javax.swing.JFrame {
 addFlat af;
-    
-    public DefaultListModel model = new DefaultListModel();
+   
+    public DefaultListModel model;
 
-    public void setmodel() {
+   public void select_names() {
        
-        model.addElement(af.names());
-        serviceList.setModel(model);
-       
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
 
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String selection = "SELECT FLAT_NAME FROM SASHA.FLAT WHERE FLAT_ID = 1";
+            ResultSet rs = st.executeQuery(selection);
+            rs.next();
+            String text = rs.getString("FLAT_NAME");
+              model.addElement(text);
+              serviceList.setModel(model);
+           
+            
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+             
     }
 
     public flat() {
-
+       model = new DefaultListModel();
         initComponents();
-
+        select_names();
     }
 
     /**
@@ -115,7 +139,7 @@ addFlat af;
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void addToListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addToListActionPerformed
-        setmodel();
+       
        
         
        
