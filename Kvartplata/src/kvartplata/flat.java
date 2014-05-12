@@ -38,12 +38,14 @@ addFlat af;
             Connection c = null;//Соединение с БД
             c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
             Statement st = c.createStatement();//Готовим запрос
-            String selection = "SELECT FLAT_NAME FROM SASHA.FLAT WHERE FLAT_ID = 1";
+            String selection = "SELECT * FROM SASHA.FLAT ";
             ResultSet rs = st.executeQuery(selection);
-            rs.next();
+            while(rs.next()) {
+                int id = rs.getInt("FLAT_ID");
             String text = rs.getString("FLAT_NAME");
-              model.addElement(text);
-              serviceList.setModel(model);
+            String street = id + ". " + text;
+            model.addElement(street);
+            serviceList.setModel(model);}
            
             
         } catch (ClassNotFoundException | SQLException e) {
@@ -71,7 +73,6 @@ addFlat af;
         serviceList = new javax.swing.JList();
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
-        addToList = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -91,13 +92,6 @@ addFlat af;
             }
         });
 
-        addToList.setText("addToList");
-        addToList.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addToListActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -110,8 +104,6 @@ addFlat af;
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(addButton)
-                        .addGap(97, 97, 97)
-                        .addComponent(addToList)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(deleteButton))))
         );
@@ -123,7 +115,6 @@ addFlat af;
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addButton)
-                    .addComponent(addToList)
                     .addComponent(deleteButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -132,18 +123,11 @@ addFlat af;
     }// </editor-fold>//GEN-END:initComponents
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-         af = new addFlat();
+         af = new addFlat(model);
           af.setVisible(true);
        
 
     }//GEN-LAST:event_addButtonActionPerformed
-
-    private void addToListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addToListActionPerformed
-       
-       
-        
-       
-    }//GEN-LAST:event_addToListActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
 int[] indexesForDeletion = serviceList.getSelectedIndices();
@@ -192,7 +176,6 @@ int[] indexesForDeletion = serviceList.getSelectedIndices();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
-    private javax.swing.JButton addToList;
     private javax.swing.JButton deleteButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList serviceList;
