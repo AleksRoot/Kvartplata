@@ -22,10 +22,11 @@ import javax.swing.JScrollPane;
  */
 public class flat extends javax.swing.JFrame {
 addFlat af;
-   
+   String delete;
+int delete_List;
     public DefaultListModel model;
 
-   public void select_names() {
+   public void select_flat() {
        
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -45,7 +46,7 @@ addFlat af;
             String text = rs.getString("FLAT_NAME");
             String street = id + ". " + text;
             model.addElement(street);
-            serviceList.setModel(model);}
+            flatList.setModel(model);}
            
             
         } catch (ClassNotFoundException | SQLException e) {
@@ -53,11 +54,30 @@ addFlat af;
         }
              
     }
+   
+   public void deletion() {
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            Connection c = null;
+            c = DriverManager.getConnection(url, user, password);
+            Statement st = c.createStatement();
+            String deletion = "DELETE FROM SASHA.FLAT WHERE FLAT_ID =  %d";
+            delete = String.format(deletion, delete_List);
+            st.executeUpdate(delete);
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+    }
+   }
 
     public flat() {
        model = new DefaultListModel();
         initComponents();
-        select_names();
+        select_flat();
     }
 
     /**
@@ -70,13 +90,18 @@ addFlat af;
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        serviceList = new javax.swing.JList();
+        flatList = new javax.swing.JList();
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jScrollPane1.setViewportView(serviceList);
+        flatList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                flatListMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(flatList);
 
         addButton.setText("addName");
         addButton.addActionListener(new java.awt.event.ActionListener() {
@@ -99,13 +124,14 @@ addFlat af;
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(addButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(deleteButton))))
+                        .addComponent(deleteButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 445, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -130,11 +156,21 @@ addFlat af;
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-int[] indexesForDeletion = serviceList.getSelectedIndices();
+int[] indexesForDeletion = flatList.getSelectedIndices();
         for (int i = 0; i < indexesForDeletion.length; i++) {
             model.remove(indexesForDeletion[i]);
-        }       
+        }    
+        delete_List = flatList.getSelectedIndex();
+        deletion(); 
     }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void flatListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_flatListMouseClicked
+        if (evt.getClickCount() == 2) {
+           Object[] arrayList = flatList.getSelectedValues();
+            PaymentAndCounters dialog = new PaymentAndCounters(arrayList);
+            dialog.setVisible(true);    
+        }
+    }//GEN-LAST:event_flatListMouseClicked
 
     /**
      * @param args the command line arguments
@@ -177,7 +213,7 @@ int[] indexesForDeletion = serviceList.getSelectedIndices();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JButton deleteButton;
+    private javax.swing.JList flatList;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JList serviceList;
     // End of variables declaration//GEN-END:variables
 }
