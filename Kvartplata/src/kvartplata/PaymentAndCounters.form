@@ -28,15 +28,15 @@
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="jLabel1" max="32767" attributes="0"/>
                   <Component id="jScrollPane1" alignment="0" pref="0" max="32767" attributes="0"/>
-                  <Component id="editCounters" alignment="0" max="32767" attributes="0"/>
+                  <Component id="editCounter" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="addPayment" min="-2" pref="93" max="-2" attributes="0"/>
+                      <Component id="addMonth" min="-2" pref="93" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="removePayment" min="-2" max="-2" attributes="0"/>
+                      <Component id="removeMonth" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane2" pref="280" max="32767" attributes="0"/>
+              <Component id="jScrollPane2" pref="286" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -53,11 +53,11 @@
                       <Component id="jScrollPane1" min="-2" pref="296" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="addPayment" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="removePayment" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="addMonth" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="removeMonth" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="editCounters" min="-2" max="-2" attributes="0"/>
+                      <Component id="editCounter" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -85,22 +85,25 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="addPayment">
+    <Component class="javax.swing.JButton" name="addMonth">
       <Properties>
-        <Property name="text" type="java.lang.String" value="addPayment"/>
+        <Property name="text" type="java.lang.String" value="Add Month"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addMonthActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="removeMonth">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Remove Month"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="removePayment">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="removePayment"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="editCounters">
+    <Component class="javax.swing.JButton" name="editCounter">
       <Properties>
         <Property name="text" type="java.lang.String" value="editCounters"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editCountersActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editCounterActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane2">

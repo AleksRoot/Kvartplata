@@ -19,8 +19,24 @@ import javax.swing.DefaultListModel;
 public class PaymentAndCounters extends javax.swing.JFrame {
 
     public DefaultListModel model;
+int FlatID;
+    
 
-    public void select_month() {
+    PaymentAndCounters(Object[] arrayList,  int Flatid) {
+        model = new DefaultListModel();
+        initComponents();
+        String select;
+        
+        for (int i = 0; i < arrayList.length; i++) {
+            select = (String) arrayList[i];
+            jLabel1.setText(select);
+        }
+        select_month(Flatid);
+        FlatID = Flatid;
+
+         jTextArea1.setText("lalala \nololo");
+    }
+public void select_month(int Flatid) {
 
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -33,8 +49,9 @@ public class PaymentAndCounters extends javax.swing.JFrame {
             Connection c = null;//Соединение с БД
             c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
             Statement st = c.createStatement();//Готовим запрос
-            String selection = "SELECT * FROM SASHA.PAYMENT";
-            ResultSet rs = st.executeQuery(selection);
+            String selection = "SELECT * FROM SASHA.PAYMENT WHERE FLAT_ID = %d";
+            String select = String.format(selection, Flatid);
+            ResultSet rs = st.executeQuery(select);
             while (rs.next()) {
                 String text = rs.getString("DATE");
                 model.addElement(text);
@@ -46,20 +63,6 @@ public class PaymentAndCounters extends javax.swing.JFrame {
         }
 
     }
-
-    PaymentAndCounters(Object[] arrayList) {
-        model = new DefaultListModel();
-        initComponents();
-        String select;
-        for (int i = 0; i < arrayList.length; i++) {
-            select = (String) arrayList[i];
-            jLabel1.setText(select);
-        }
-        select_month();
-
-         jTextArea1.setText("lalala \nololo");
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -71,9 +74,9 @@ public class PaymentAndCounters extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         monthList = new javax.swing.JList();
-        addPayment = new javax.swing.JButton();
-        removePayment = new javax.swing.JButton();
-        editCounters = new javax.swing.JButton();
+        addMonth = new javax.swing.JButton();
+        removeMonth = new javax.swing.JButton();
+        editCounter = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
@@ -87,14 +90,19 @@ public class PaymentAndCounters extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(monthList);
 
-        addPayment.setText("addPayment");
-
-        removePayment.setText("removePayment");
-
-        editCounters.setText("editCounters");
-        editCounters.addActionListener(new java.awt.event.ActionListener() {
+        addMonth.setText("Add Month");
+        addMonth.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editCountersActionPerformed(evt);
+                addMonthActionPerformed(evt);
+            }
+        });
+
+        removeMonth.setText("Remove Month");
+
+        editCounter.setText("editCounters");
+        editCounter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editCounterActionPerformed(evt);
             }
         });
 
@@ -114,13 +122,13 @@ public class PaymentAndCounters extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(editCounters, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(editCounter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(addPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(addMonth, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(removePayment)))
+                        .addComponent(removeMonth)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -135,10 +143,10 @@ public class PaymentAndCounters extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(addPayment)
-                            .addComponent(removePayment))
+                            .addComponent(addMonth)
+                            .addComponent(removeMonth))
                         .addGap(18, 18, 18)
-                        .addComponent(editCounters)))
+                        .addComponent(editCounter)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -146,23 +154,30 @@ public class PaymentAndCounters extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void monthListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_monthListMouseClicked
-        
+        if (evt.getClickCount() == 2) {
+       
+        }
     }//GEN-LAST:event_monthListMouseClicked
 
-    private void editCountersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editCountersActionPerformed
-       editCounters dialog = new editCounters();
-            dialog.setVisible(true);    
-    }//GEN-LAST:event_editCountersActionPerformed
+    private void editCounterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editCounterActionPerformed
+       editCounters dialog3 = new editCounters(FlatID);
+            dialog3.setVisible(true);    
+    }//GEN-LAST:event_editCounterActionPerformed
+
+    private void addMonthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMonthActionPerformed
+       newMonth dialog2 = new newMonth(FlatID);
+            dialog2.setVisible(true); 
+    }//GEN-LAST:event_addMonthActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addPayment;
-    private javax.swing.JButton editCounters;
+    private javax.swing.JButton addMonth;
+    private javax.swing.JButton editCounter;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JList monthList;
-    private javax.swing.JButton removePayment;
+    private javax.swing.JButton removeMonth;
     // End of variables declaration//GEN-END:variables
 }

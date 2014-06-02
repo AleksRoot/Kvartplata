@@ -20,7 +20,10 @@ public class База_даних extends javax.swing.JFrame {
 
     public DefaultListModel model;
 String delete;
-int delete_List;
+String delete_List;
+String Month;
+int Flatid;
+String a;
     public void select() {
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -38,7 +41,7 @@ int delete_List;
                 int id = rs.getInt("НОМЕР");
                 String text = rs.getString("НАЗВА");
                 String street = id + ". " + text;
-                model.addElement(street);
+                model.addElement(text);
                 JList.setModel(model);
             }
         } catch (ClassNotFoundException | SQLException e) {
@@ -54,12 +57,15 @@ int delete_List;
         String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
 
         try {
+             Flatid = 1;
+            Month = "aaa";
             Class.forName(driver);
             Connection c = null;
             c = DriverManager.getConnection(url, user, password);
             Statement st = c.createStatement();
-            String insertion = "INSERT INTO БАЗА_ДАНИХ(НОМЕР, НАЗВА) VALUES (3, 'Опалення')";
-            st.executeUpdate(insertion);
+            String insertion = "INSERT INTO БАЗА_ДАНИХ(НОМЕР, НАЗВА) VALUES (%d, '%s')";
+            String insert = String.format(insertion, Flatid, a);
+            st.execute(insert);
         } catch (ClassNotFoundException | SQLException e) {
             String a = e.getMessage();
         }
@@ -94,7 +100,7 @@ public void deletion() {
             Connection c = null;
             c = DriverManager.getConnection(url, user, password);
             Statement st = c.createStatement();
-            String deletion = "DELETE FROM БАЗА_ДАНИХ WHERE НОМЕР = %d";
+            String deletion = "DELETE FROM БАЗА_ДАНИХ WHERE НАЗВА = '%s'";
             delete = String.format(deletion, delete_List);
             st.executeUpdate(delete);
         } catch (ClassNotFoundException | SQLException e) {
@@ -129,6 +135,8 @@ public void deletion() {
         JList = new javax.swing.JList();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -162,10 +170,21 @@ public void deletion() {
 
         jScrollPane1.setViewportView(JList);
 
+        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
         jButton1.setText("getName");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jButton2.setText("jButton2");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
             }
         });
 
@@ -178,20 +197,25 @@ public void deletion() {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton1))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jButton1))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(selectButton)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(insertButton)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(updateButton)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(deleteButton)))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(selectButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(insertButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(updateButton)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(deleteButton)))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                .addComponent(jButton2)))
+                        .addGap(0, 24, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -203,6 +227,10 @@ public void deletion() {
                     .addComponent(jButton1)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(selectButton)
                     .addComponent(insertButton)
@@ -219,7 +247,8 @@ public void deletion() {
     }//GEN-LAST:event_selectButtonActionPerformed
 
     private void insertButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertButtonActionPerformed
-         insert();        
+       a = jLabel2.getText();
+        insert();        
     }//GEN-LAST:event_insertButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
@@ -227,24 +256,28 @@ public void deletion() {
     }//GEN-LAST:event_updateButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-        delete_List =  JList.getSelectedIndex() + 1;
+        delete_List = (String) JList.getSelectedValue();
        
         
         deletion();       
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-  delete_List =  JList.getSelectedIndex() + 1;
-  String b =Integer.toString(delete_List);
-       jLabel1.setText(b); 
-/*String select;
+int Flatid = JList.getSelectedIndex();  
+String id = Integer.toString(Flatid);
+String select;
 Object[] arrayList = JList.getSelectedValues();
 for(int i=0;i<arrayList.length;i++){
 select = (String)arrayList[i];
-jLabel1.setText(select ); 
-}*/
+jLabel1.setText(id); 
+}
               
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+      String b = jLabel1.getText();
+       jLabel2.setText(b);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -286,7 +319,9 @@ jLabel1.setText(select );
     private javax.swing.JButton deleteButton;
     private javax.swing.JButton insertButton;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton selectButton;
     private javax.swing.JButton updateButton;
