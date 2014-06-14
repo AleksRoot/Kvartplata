@@ -22,23 +22,28 @@ import javax.swing.DefaultListModel;
 public class addFlat extends javax.swing.JFrame {
    String name;
    String id;
+   int idd;
     public DefaultListModel model;
     public DefaultListModel model2;
-   public void insertBase(String query) throws ClassNotFoundException, SQLException {
-        
-        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+   
+    public void insertBase()  {
+           String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
         String password = "sasha";//Пароль пользователя
         String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
-        Class.forName(driver);//Регистрируем драйвер
-        Connection c = null;//Соединение с БД
-        c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
-        Statement st = c.createStatement();//Готовим запрос
-        st.executeUpdate(query);
-        //st.execute(query);
-       
-    }
-   
+
+        try {
+            Class.forName(driver);
+            Connection c = null;
+            c = DriverManager.getConnection(url, user, password);
+            Statement st = c.createStatement();
+             String insertion = "INSERT INTO FLAT(FLAT_ID, FLAT_NAME) VALUES (%d, '%s')";
+           String query = String.format(Locale.US, insertion, idd, name);
+            st.execute(query);
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+   }
     
 
     addFlat(DefaultListModel model, DefaultListModel model2) {
@@ -159,22 +164,14 @@ public class addFlat extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-      id = Number.getText();
-      int id2 = Integer.parseInt(id);
+     id = Number.getText();
+     idd = Integer.parseInt(id);
       name = newName.getText();
-      String insertion = "INSERT INTO FLAT(FLAT_ID, FLAT_NAME) VALUES (%d, '%s')";
-      String query = String.format(Locale.US, insertion, id2, name);
-        try {
-            insertBase(query);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Counter.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(Counter.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        String newnames = id2 +". " + name;
+        insertBase();
      model.addElement(name);
      model2.addElement(id);
-      
+      flat f = new flat();
+      f.select_flat();
       this.setVisible(false);
       
       

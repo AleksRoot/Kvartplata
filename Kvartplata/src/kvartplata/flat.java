@@ -186,7 +186,7 @@ deletion();
     private void flatListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_flatListMouseClicked
         if (evt.getClickCount() == 2) {
             int Flatid = flatList.getSelectedIndex() + 1;
-           Object[] arrayList = flatList.getSelectedValues();
+           Object arrayList = flatList.getSelectedValue();
             PaymentAndCounters dialog = new PaymentAndCounters(arrayList, Flatid);
             dialog.setVisible(true);    
         }
