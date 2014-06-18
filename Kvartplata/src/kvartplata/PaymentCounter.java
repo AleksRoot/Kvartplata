@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package kvartplata;
 
 import java.sql.Connection;
@@ -18,16 +17,29 @@ import javax.swing.DefaultListModel;
  * @author Саша
  */
 public class PaymentCounter extends javax.swing.JFrame {
-double new_counter;
-                double previous_counter ;
-                double rate;
-                double counter_difference;
-                double total;
-       public DefaultListModel model;
-     PaymentCounter(int FlatID) {
+
+    double new_counter;
+    double previous_counter;
+    double rate;
+    double counter_difference;
+    double total;
+    public DefaultListModel model;
+    int flatid;
+String select;
+    PaymentCounter(int FlatID) {
+       // PaymentCounter(int FlatID, String select) {
+       // this.select= select;
+        // jLabel2.setText("aaa");
+        model = new DefaultListModel();
+       
+    
+        this.flatid = FlatID;
         initComponents();
+        select_counters(flatid);
+
     }
-public void select_counters(int Flatid) {
+
+    public void select_counters(int Flatid) {
 
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -44,13 +56,16 @@ public void select_counters(int Flatid) {
             String select = String.format(selection, Flatid);
             ResultSet rs = st.executeQuery(select);
             while (rs.next()) {
-                
+
                 String text = rs.getString("COUNTER_NAME");
-                 new_counter = rs.getDouble("NEW_COUNTER");
-                previous_counter = rs.getDouble("PREVIOUS_COUNTER");
+                new_counter = rs.getDouble("NEW_COUNTER");
+                 previous_counter = rs.getDouble("PREVIOUS_COUNTER");
                  rate = rs.getDouble("RATE");
                  counter_difference = new_counter - previous_counter;
-               total = counter_difference * rate;
+                 total = counter_difference * rate;
+              // String in1 = "INSERT INTO SASHA.PAYMENT_DETAILS(COUNTER_DIFFERENCE, TOTAL) VALUES (%f, %f)";
+                //String insert = String.format( in1, counter_difference, total);
+               //st.execute(insert);
                 model.addElement(text);
                 CounterList.setModel(model);
             }
@@ -60,7 +75,6 @@ public void select_counters(int Flatid) {
         }
 
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -167,15 +181,15 @@ public void select_counters(int Flatid) {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
-                        .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE))
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(PreviousCounterButton)
@@ -184,7 +198,7 @@ public void select_counters(int Flatid) {
                     .addComponent(CounterDifferenceButton)
                     .addComponent(TotalButton, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
                     .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -210,7 +224,7 @@ public void select_counters(int Flatid) {
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(CounterDifferenceButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(TotalButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
@@ -233,16 +247,16 @@ public void select_counters(int Flatid) {
     }//GEN-LAST:event_PreviousCounterButtonActionPerformed
 
     private void CounterListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CounterListMouseClicked
-       String PC = Double.toString(previous_counter);
-        PreviousCounterButton.setText(PC);
-        String NC = Double.toString(new_counter);
-        NewCounterButton.setText(PC);
-        String RA = Double.toString(rate);
-       RateButton.setText(RA);
-       String CD = Double.toString(counter_difference);
-       CounterDifferenceButton.setText(CD);
-       String TO = Double.toString(total);
-       TotalButton.setText(TO);
+        String PC = Double.toString(previous_counter);
+         PreviousCounterButton.setText(PC);
+         String NC = Double.toString(new_counter);
+         NewCounterButton.setText(NC);
+         String RA = Double.toString(rate);
+         RateButton.setText(RA);
+         String CD = Double.toString(counter_difference);
+         CounterDifferenceButton.setText(CD);
+         String TO = Double.toString(total);
+         TotalButton.setText(TO);
     }//GEN-LAST:event_CounterListMouseClicked
 
     private void NewCounterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewCounterButtonActionPerformed
@@ -264,7 +278,6 @@ public void select_counters(int Flatid) {
     /**
      * @param args the command line arguments
      */
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField CounterDifferenceButton;

@@ -23,8 +23,10 @@ public DefaultListModel model2;
     String MonthNumber;
     int MN ;
     int Flatid;
+  Object arrayList;
 
-    public newMonth(int FlatID, DefaultListModel model, DefaultListModel model2) {
+    public newMonth(int FlatID, DefaultListModel model, DefaultListModel model2, Object arrayList) {
+      this.arrayList=arrayList;
         Flatid = FlatID;
         initComponents();
  this.model = model;
@@ -43,10 +45,9 @@ public DefaultListModel model2;
             Connection c = null;
             c = DriverManager.getConnection(url, user, password);
             Statement st = c.createStatement();
-            //String insertion = "INSERT INTO SASHA.PAYMENT(FLAT_ID, PAYMENT_ID, DATE) VALUES (%d, %d, '%s')";
-             //String insert = String.format(Locale.US, insertion, Flatid, MN, Month);
-            String insertion = "INSERT INTO SASHA.PAYMENT(DATE) VALUES ('%s')";
-           String insert = String.format( insertion, Month);
+           String insertion = "INSERT INTO SASHA.PAYMENT(FLAT_ID, PAYMENT_ID, DATE) VALUES (%d, %d, '%s')";
+             String insert = String.format( insertion, Flatid, MN, Month);
+            
             st.execute(insert);
         } catch (ClassNotFoundException | SQLException e) {
             String a = e.getMessage();
@@ -148,12 +149,15 @@ public DefaultListModel model2;
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         
-        //MonthNumber = jTextField1.getText();
-        //MN = Integer.parseInt(MonthNumber);
+        MonthNumber = jTextField1.getText();
+        MN = Integer.parseInt(MonthNumber);
          Month = MonthName.getText();
         insert_month();
-       // model.addElement(Month);
-       // model2.addElement(MonthNumber);
+        model.addElement(Month);
+        model2.addElement(MonthNumber);
+         Months p =new Months(arrayList,Flatid);
+     
+        p.select_month(Flatid);
         this.setVisible(false);
         
 

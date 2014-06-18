@@ -187,7 +187,7 @@ deletion();
         if (evt.getClickCount() == 2) {
             int Flatid = flatList.getSelectedIndex() + 1;
            Object arrayList = flatList.getSelectedValue();
-            PaymentAndCounters dialog = new PaymentAndCounters(arrayList, Flatid);
+            Months dialog = new Months(arrayList, Flatid);
             dialog.setVisible(true);    
         }
     }//GEN-LAST:event_flatListMouseClicked
