@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.DefaultListModel;
+import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  *
@@ -18,24 +20,23 @@ import javax.swing.DefaultListModel;
  */
 public class PaymentCounter extends javax.swing.JFrame {
 
-    double new_counter;
-    double previous_counter;
-    double rate;
-    double counter_difference;
-    double total;
-    public DefaultListModel model;
-    int flatid;
-String select;
-    PaymentCounter(int FlatID) {
-       // PaymentCounter(int FlatID, String select) {
-       // this.select= select;
-        // jLabel2.setText("aaa");
-        model = new DefaultListModel();
-       
     
-        this.flatid = FlatID;
+    public DefaultListModel model;
+    int payment_id;
+    String sel;
+    int number;
+    ArrayList al = new ArrayList();
+    ArrayList al2 = new ArrayList();
+    Datas data = new Datas();
+Object Array;
+    PaymentCounter(int payment_id, Object ArrayList) {
+      model = new DefaultListModel();
+      this.Array = ArrayList;
+      sel = (String) Array;
+    // jLabel1.setText(sel);
+        this.payment_id = payment_id;
         initComponents();
-        select_counters(flatid);
+        select_counters(payment_id);
 
     }
 
@@ -55,27 +56,35 @@ String select;
             String selection = "SELECT * FROM SASHA.PAYMENT_DETAILS WHERE PAYMENT_ID = %d";
             String select = String.format(selection, Flatid);
             ResultSet rs = st.executeQuery(select);
+
             while (rs.next()) {
 
-                String text = rs.getString("COUNTER_NAME");
-                new_counter = rs.getDouble("NEW_COUNTER");
-                 previous_counter = rs.getDouble("PREVIOUS_COUNTER");
-                 rate = rs.getDouble("RATE");
-                 counter_difference = new_counter - previous_counter;
-                 total = counter_difference * rate;
-              // String in1 = "INSERT INTO SASHA.PAYMENT_DETAILS(COUNTER_DIFFERENCE, TOTAL) VALUES (%f, %f)";
-                //String insert = String.format( in1, counter_difference, total);
-               //st.execute(insert);
-                model.addElement(text);
+                data.text = rs.getString("COUNTER_NAME");
+                data.new_counter = rs.getDouble("NEW_COUNTER");
+                data.previous_counter = rs.getDouble("PREVIOUS_COUNTER");
+               data.rate = rs.getDouble("RATE");
+                data.counter_difference = data.new_counter - data.previous_counter;
+                data.total = data.counter_difference * data.rate;
+                //al.add(data);
+                al.add(data.new_counter);  al.add(data.previous_counter);  al.add(data.rate); al.add(data.counter_difference); al.add(data.total);
+                 al2.add(data.counter_difference); al2.add(data.total);
+                model.addElement(data.text);
+
                 CounterList.setModel(model);
             }
-
+String updation = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TOTAL = %f";
+            for (int i = 0;i < al2.size(); i=i+2) {
+                 
+                String update = String.format(Locale.ENGLISH,updation, al2.get(i), al2.get(i+1));
+               st.execute(update);
+            }
         } catch (ClassNotFoundException | SQLException e) {
             String a = e.getMessage();
         }
 
     }
 
+  
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -87,19 +96,19 @@ String select;
 
         jScrollPane1 = new javax.swing.JScrollPane();
         CounterList = new javax.swing.JList();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        PreviousCounterButton = new javax.swing.JTextField();
-        NewCounterButton = new javax.swing.JTextField();
-        RateButton = new javax.swing.JTextField();
-        CounterDifferenceButton = new javax.swing.JTextField();
-        TotalButton = new javax.swing.JTextField();
+        PreviousCounterLabel = new javax.swing.JTextField();
+        NewCounterLabel = new javax.swing.JTextField();
+        RateLabel = new javax.swing.JTextField();
+        CounterDifferenceLabel = new javax.swing.JTextField();
+        TotalLabel = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -109,9 +118,6 @@ String select;
             }
         });
         jScrollPane1.setViewportView(CounterList);
-
-        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Previous Counter");
@@ -133,33 +139,33 @@ String select;
         jLabel7.setText("Total");
         jLabel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        PreviousCounterButton.addActionListener(new java.awt.event.ActionListener() {
+        PreviousCounterLabel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PreviousCounterButtonActionPerformed(evt);
+                PreviousCounterLabelActionPerformed(evt);
             }
         });
 
-        NewCounterButton.addActionListener(new java.awt.event.ActionListener() {
+        NewCounterLabel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NewCounterButtonActionPerformed(evt);
+                NewCounterLabelActionPerformed(evt);
             }
         });
 
-        RateButton.addActionListener(new java.awt.event.ActionListener() {
+        RateLabel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RateButtonActionPerformed(evt);
+                RateLabelActionPerformed(evt);
             }
         });
 
-        CounterDifferenceButton.addActionListener(new java.awt.event.ActionListener() {
+        CounterDifferenceLabel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CounterDifferenceButtonActionPerformed(evt);
+                CounterDifferenceLabelActionPerformed(evt);
             }
         });
 
-        TotalButton.addActionListener(new java.awt.event.ActionListener() {
+        TotalLabel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TotalButtonActionPerformed(evt);
+                TotalLabelActionPerformed(evt);
             }
         });
 
@@ -172,6 +178,9 @@ String select;
             }
         });
 
+        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -179,7 +188,7 @@ String select;
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -192,40 +201,40 @@ String select;
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(PreviousCounterButton)
-                    .addComponent(RateButton)
-                    .addComponent(NewCounterButton)
-                    .addComponent(CounterDifferenceButton)
-                    .addComponent(TotalButton, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
+                    .addComponent(PreviousCounterLabel)
+                    .addComponent(RateLabel)
+                    .addComponent(NewCounterLabel)
+                    .addComponent(CounterDifferenceLabel)
+                    .addComponent(TotalLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
                     .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(43, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(5, 5, 5)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(PreviousCounterButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(PreviousCounterLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(NewCounterButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(NewCounterLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(RateButton, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                            .addComponent(RateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(CounterDifferenceButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(CounterDifferenceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(TotalButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(TotalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -242,53 +251,57 @@ String select;
         this.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void PreviousCounterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PreviousCounterButtonActionPerformed
+    private void PreviousCounterLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PreviousCounterLabelActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_PreviousCounterButtonActionPerformed
+    }//GEN-LAST:event_PreviousCounterLabelActionPerformed
 
     private void CounterListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CounterListMouseClicked
-        String PC = Double.toString(previous_counter);
-         PreviousCounterButton.setText(PC);
-         String NC = Double.toString(new_counter);
-         NewCounterButton.setText(NC);
-         String RA = Double.toString(rate);
-         RateButton.setText(RA);
-         String CD = Double.toString(counter_difference);
-         CounterDifferenceButton.setText(CD);
-         String TO = Double.toString(total);
-         TotalButton.setText(TO);
+        number = CounterList.getSelectedIndex();
+        int i = (number)*5;
+       
+       String NC = Double.toString((double) al.get(i));
+        NewCounterLabel.setText(NC);
+         String PC = Double.toString((double) al.get(i+1));
+        PreviousCounterLabel.setText(PC);
+        String RA = Double.toString((double) al.get(i+2));
+        RateLabel.setText(RA);
+        String CD = Double.toString((double) al.get(i+3));
+        CounterDifferenceLabel.setText(CD);
+        String TO = Double.toString((double) al.get(i+4));
+        TotalLabel.setText(TO);
+        
     }//GEN-LAST:event_CounterListMouseClicked
 
-    private void NewCounterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewCounterButtonActionPerformed
+    private void NewCounterLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewCounterLabelActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_NewCounterButtonActionPerformed
+    }//GEN-LAST:event_NewCounterLabelActionPerformed
 
-    private void RateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RateButtonActionPerformed
+    private void RateLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RateLabelActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_RateButtonActionPerformed
+    }//GEN-LAST:event_RateLabelActionPerformed
 
-    private void CounterDifferenceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CounterDifferenceButtonActionPerformed
+    private void CounterDifferenceLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CounterDifferenceLabelActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_CounterDifferenceButtonActionPerformed
+    }//GEN-LAST:event_CounterDifferenceLabelActionPerformed
 
-    private void TotalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TotalButtonActionPerformed
+    private void TotalLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TotalLabelActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_TotalButtonActionPerformed
+    }//GEN-LAST:event_TotalLabelActionPerformed
 
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField CounterDifferenceButton;
+    private javax.swing.JTextField CounterDifferenceLabel;
     private javax.swing.JList CounterList;
-    private javax.swing.JTextField NewCounterButton;
-    private javax.swing.JTextField PreviousCounterButton;
-    private javax.swing.JTextField RateButton;
-    private javax.swing.JTextField TotalButton;
+    private javax.swing.JTextField NewCounterLabel;
+    private javax.swing.JTextField PreviousCounterLabel;
+    private javax.swing.JTextField RateLabel;
+    private javax.swing.JTextField TotalLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

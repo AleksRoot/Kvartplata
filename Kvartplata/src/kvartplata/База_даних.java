@@ -10,6 +10,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Locale;
 import javax.swing.DefaultListModel;
 
 /**
@@ -19,11 +21,16 @@ import javax.swing.DefaultListModel;
 public class База_даних extends javax.swing.JFrame {
 
     public DefaultListModel model;
-String delete;
-String delete_List;
-String Month;
-int Flatid;
-String a;
+    String delete;
+    String delete_List;
+    String Month;
+    int Flatid;
+    String a;
+    //Datas data = new Datas();
+    ArrayList al = new ArrayList();
+    ArrayList al2 = new ArrayList();
+    ArrayList lichulnuku = new ArrayList();
+
     public void select() {
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -37,23 +44,36 @@ String a;
             Statement st = c.createStatement();
             String selection = "SELECT * FROM SASHA.БАЗА_ДАНИХ ";
             ResultSet rs = st.executeQuery(selection);
-            
-// Setting the updating String
 
+// Setting the updating String
             while (rs.next()) {
-                
-                int id = rs.getInt("НОМЕР");
-                int id2 = id + 1;
-               
-                String text = rs.getString("НАЗВА");
-                String street = id + ". " + text;
-                 
-                
-                model.addElement(text);
+                Datas data = new Datas();
+                data.id = rs.getInt("НОМЕР");
+                data.text = rs.getString("НАЗВА");
+                data.previous_counter = rs.getDouble("ЛІЧИЛЬНИК1");
+                data.new_counter = data.previous_counter + 5;
+                data.rate = data.previous_counter / 10;
+                lichulnuku.add(data.new_counter );
+                lichulnuku.add(data.rate );
+                lichulnuku.add(data.id );
+               // al.add(data.new_counter);
+               // al2.add(data.rate);
+                model.addElement(data.text);
                 JList.setModel(model);
-               
             }
-             st.executeUpdate("UPDATE БАЗА_ДАНИХ SET НАЗВА = 'ГАЗ' WHERE НАЗВА = 'СТОКИ'");
+           String updation = "UPDATE БАЗА_ДАНИХ SET ЛІЧИЛЬНИК2 = %f, ТАРИФ = %f WHERE НОМЕР = %d ";
+            for (int i = 0; i < lichulnuku.size(); i=i+3) {
+               String update = String.format(Locale.ENGLISH,updation,  lichulnuku.get(i), lichulnuku.get(i+1), lichulnuku.get(i+2));
+               st.execute(update);
+            }
+               /* String updation = "UPDATE БАЗА_ДАНИХ  SET ЛІЧИЛЬНИК2 = 12, ТАРИФ = 2 WHERE НОМЕР = %d";
+                
+                 
+                for (int z = 1; z < data.id + 1; z = z + 1) {
+                String update = String.format(Locale.ENGLISH,updation, z);
+               
+                st.execute(update);
+            }*/
         } catch (ClassNotFoundException | SQLException e) {
             String a = e.getMessage();
         }
@@ -67,7 +87,7 @@ String a;
         String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
 
         try {
-             Flatid = 1;
+            Flatid = 1;
             Month = "aaa";
             Class.forName(driver);
             Connection c = null;
@@ -81,6 +101,7 @@ String a;
         }
 
     }
+
     public void update() {
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -93,13 +114,14 @@ String a;
             c = DriverManager.getConnection(url, user, password);
             Statement st = c.createStatement();
             String updation = "UPDATE БАЗА_ДАНИХ SET НАЗВА = 'СТОКИ' WHERE НАЗВА = 'ГАЗ'";
-            st.executeUpdate(updation);
+            st.execute(updation);
         } catch (ClassNotFoundException | SQLException e) {
             String a = e.getMessage();
         }
 
     }
-public void deletion() {
+
+    public void deletion() {
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
         String password = "sasha";//Пароль пользователя
@@ -119,13 +141,11 @@ public void deletion() {
 
     }
 
-    
     public База_даних() {
         model = new DefaultListModel();
         initComponents();
-       jLabel1.setText("a");
-     
-       
+        jLabel1.setText("a");
+
     }
 
     /**
@@ -273,45 +293,44 @@ public void deletion() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void selectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectButtonActionPerformed
-        select();       
+        select();
     }//GEN-LAST:event_selectButtonActionPerformed
 
     private void insertButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insertButtonActionPerformed
-       a = jTextField1.getText();
-        insert();        
+        a = jTextField1.getText();
+        insert();
     }//GEN-LAST:event_insertButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
-      update();
+        update();
     }//GEN-LAST:event_updateButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
         delete_List = (String) JList.getSelectedValue();
-       
-        
-        deletion();       
+
+        deletion();
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-int Flatid = JList.getSelectedIndex();  
-String id = Integer.toString(Flatid);
-String select;
-Object[] arrayList = JList.getSelectedValues();
-for(int i=0;i<arrayList.length;i++){
-select = (String)arrayList[i];
-jLabel1.setText(id); 
-}
-              
+        int Flatid = JList.getSelectedIndex();
+        String id = Integer.toString(Flatid);
+        String select;
+        Object[] arrayList = JList.getSelectedValues();
+        for (int i = 0; i < arrayList.length; i++) {
+            select = (String) arrayList[i];
+            jLabel1.setText(id);
+        }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-      String b = jLabel1.getText();
-       jLabel2.setText(b);
+        String b = jLabel1.getText();
+        jLabel2.setText(b);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-      Flatid = 1;
        
+
     }//GEN-LAST:event_addActionPerformed
 
     /**

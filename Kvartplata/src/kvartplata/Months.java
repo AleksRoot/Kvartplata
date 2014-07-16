@@ -22,14 +22,16 @@ public class Months extends javax.swing.JFrame {
     public DefaultListModel model2;
     int FlatID;
 Object arrayList;
+int payment_id;
+String sel;
     Months(Object arrayList, int Flatid) {
        this.arrayList= arrayList;
         model = new DefaultListModel();
         model2 = new DefaultListModel();
         initComponents();
-        String select;
-        select = (String) arrayList;
-        jLabel1.setText(select);
+        
+        sel = (String) arrayList;
+        jLabel1.setText(sel);
         select_month(Flatid);
         FlatID = Flatid;
         jTextArea1.setText("lalala \nololo");
@@ -53,7 +55,7 @@ Object arrayList;
             ResultSet rs = st.executeQuery(select);
             while (rs.next()) {
                 String text = rs.getString("DATE");
-                int payment_id = rs.getInt("PAYMENT_ID");
+               payment_id = rs.getInt("PAYMENT_ID");
                 model.addElement(text);
                 monthList.setModel(model);
                 model2.addElement(payment_id);
@@ -178,10 +180,11 @@ Object arrayList;
         if (evt.getClickCount() == 2) {
            // Object array = monthList.getSelectedValue();
             // String select = (String) array;
-       
-            PaymentCounter dialog = new PaymentCounter(FlatID);
-           //PaymentCounter dialog = new PaymentCounter(FlatID,select);
-           dialog.setVisible(true);    
+       int index = monthList.getSelectedIndex() + 1;
+        Object arrayList = monthList.getSelectedValue();  
+          
+        PaymentCounter dialog = new PaymentCounter(index, arrayList);  dialog.setVisible(true);   
+           
         }
     }//GEN-LAST:event_monthListMouseClicked
 
