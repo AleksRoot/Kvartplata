@@ -25,19 +25,29 @@ public class PaymentCounter extends javax.swing.JFrame {
     int payment_id;
     String sel;
     int number;
+    
     ArrayList al = new ArrayList();
     ArrayList al2 = new ArrayList();
     Datas data = new Datas();
 Object Array;
-    PaymentCounter(int payment_id, Object ArrayList) {
+Object Name;
+String NCL;
+double NCL2;
+String PCL;
+double  PCL2;
+String RL;
+double RL2;
+String CurrentName;
+    
+PaymentCounter(int payment_id, Object ArrayList) {
       model = new DefaultListModel();
       this.Array = ArrayList;
       sel = (String) Array;
-    // jLabel1.setText(sel);
+    
         this.payment_id = payment_id;
         initComponents();
         select_counters(payment_id);
-
+ jLabel1.setText(sel);
     }
 
     public void select_counters(int Flatid) {
@@ -72,12 +82,35 @@ Object Array;
 
                 CounterList.setModel(model);
             }
-String updation = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TOTAL = %f";
+String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TOTAL = %f";
             for (int i = 0;i < al2.size(); i=i+2) {
                  
-                String update = String.format(Locale.ENGLISH,updation, al2.get(i), al2.get(i+1));
-               st.execute(update);
+                String update1 = String.format(Locale.ENGLISH,updation1, al2.get(i), al2.get(i+1));
+               st.execute(update1);
             }
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+
+    }
+    
+      public void update_counters() {
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String update = "UPDATE SASHA.PAYMENT_DETAILS SET NEW_COUNTER = %f, PREVIOUS_COUNTER = %f, RATE = %f WHERE COUNTER_NAME = '%s'";
+            String updation = String.format(update, NCL2, PCL2, RL2, CurrentName);
+             st.execute(updation);
+
         } catch (ClassNotFoundException | SQLException e) {
             String a = e.getMessage();
         }
@@ -106,7 +139,7 @@ String updation = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TOT
         RateLabel = new javax.swing.JTextField();
         CounterDifferenceLabel = new javax.swing.JTextField();
         TotalLabel = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        SaveButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
@@ -169,7 +202,12 @@ String updation = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TOT
             }
         });
 
-        jButton1.setText("Save");
+        SaveButton.setText("Save");
+        SaveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveButtonActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Cancel");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -187,36 +225,37 @@ String updation = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TOT
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE))
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(PreviousCounterLabel)
-                    .addComponent(RateLabel)
-                    .addComponent(NewCounterLabel)
-                    .addComponent(CounterDifferenceLabel)
-                    .addComponent(TotalLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE))
+                            .addComponent(SaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(PreviousCounterLabel)
+                            .addComponent(RateLabel)
+                            .addComponent(NewCounterLabel)
+                            .addComponent(CounterDifferenceLabel)
+                            .addComponent(TotalLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(43, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(8, 8, 8)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(9, 9, 9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(PreviousCounterLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -239,9 +278,9 @@ String updation = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TOT
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(SaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(131, Short.MAX_VALUE))
+                .addContainerGap(126, Short.MAX_VALUE))
         );
 
         pack();
@@ -288,6 +327,20 @@ String updation = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TOT
         // TODO add your handling code here:
     }//GEN-LAST:event_TotalLabelActionPerformed
 
+    private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
+       Name = CounterList.getSelectedValue();
+       CurrentName = (String) Name;
+        NCL = NewCounterLabel.getText();
+        NCL2 = Double.parseDouble(NCL);
+       PCL = PreviousCounterLabel.getText();
+       PCL2 =Double.parseDouble(PCL);
+       RL = RateLabel.getText();
+       RL2 =Double.parseDouble(RL);
+       model.removeAllElements();
+       update_counters();
+       select_counters(payment_id);
+    }//GEN-LAST:event_SaveButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -298,8 +351,8 @@ String updation = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TOT
     private javax.swing.JTextField NewCounterLabel;
     private javax.swing.JTextField PreviousCounterLabel;
     private javax.swing.JTextField RateLabel;
+    private javax.swing.JButton SaveButton;
     private javax.swing.JTextField TotalLabel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;

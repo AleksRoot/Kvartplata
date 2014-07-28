@@ -21,16 +21,19 @@ public class Months extends javax.swing.JFrame {
     public DefaultListModel model;
     public DefaultListModel model2;
     int FlatID;
-Object arrayList;
+Object arrList;
 int payment_id;
 String sel;
+  String delete;
+String delete_List;
+String delete_id;
     Months(Object arrayList, int Flatid) {
-       this.arrayList= arrayList;
+       this.arrList= arrayList;
         model = new DefaultListModel();
         model2 = new DefaultListModel();
         initComponents();
         
-        sel = (String) arrayList;
+        sel = (String) arrList;
         jLabel1.setText(sel);
         select_month(Flatid);
         FlatID = Flatid;
@@ -67,7 +70,24 @@ String sel;
         }
 
     }
+ public void deletion() {
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
 
+        try {
+            Class.forName(driver);
+            Connection c = null;
+            c = DriverManager.getConnection(url, user, password);
+            Statement st = c.createStatement();
+            String deletion = "DELETE FROM SASHA.PAYMENT WHERE PAYMENT_NAME =  '%s'";
+            delete = String.format(deletion, delete_List);
+            st.executeUpdate(delete);
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+    }
+   }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -106,6 +126,11 @@ String sel;
         });
 
         removeMonth.setText("Remove Month");
+        removeMonth.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeMonthActionPerformed(evt);
+            }
+        });
 
         editCounter.setText("editCounters");
         editCounter.addActionListener(new java.awt.event.ActionListener() {
@@ -189,19 +214,31 @@ String sel;
     }//GEN-LAST:event_monthListMouseClicked
 
     private void editCounterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editCounterActionPerformed
-        editCounters dialog3 = new editCounters(FlatID);
-        dialog3.setVisible(true);
+        editCounters dialog3 = new editCounters(FlatID);         dialog3.setVisible(true);
     }//GEN-LAST:event_editCounterActionPerformed
 
     private void addMonthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMonthActionPerformed
 
-        newMonth dialog2 = new newMonth(FlatID, model, model2, arrayList);
-        dialog2.setVisible(true);
+        newMonth dialog2 = new newMonth(FlatID, model, model2, arrList);        dialog2.setVisible(true);
     }//GEN-LAST:event_addMonthActionPerformed
 
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
         this.setVisible(false);
     }//GEN-LAST:event_backActionPerformed
+
+    private void removeMonthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeMonthActionPerformed
+       int[] indexesForDeletion = monthList.getSelectedIndices();
+        int[] indexesForDeletion2 = jList1.getSelectedIndices();
+
+delete_List = (String) monthList.getSelectedValue();
+delete_id = (String) jList1.getSelectedValue();
+deletion(); 
+        for (int i = 0; i < indexesForDeletion.length; i++) {
+            model.remove(indexesForDeletion[i]);
+            model2.remove(indexesForDeletion[i]);
+            
+        }   
+    }//GEN-LAST:event_removeMonthActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -162,8 +162,7 @@ public DefaultListModel model2;
     }// </editor-fold>//GEN-END:initComponents
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-         af = new addFlat(model, model2);
-          af.setVisible(true);
+         af = new addFlat(model, model2);          af.setVisible(true);
        
 
     }//GEN-LAST:event_addButtonActionPerformed
@@ -187,8 +186,7 @@ deletion();
         if (evt.getClickCount() == 2) {
             int Flatid = flatList.getSelectedIndex() + 1;
            Object arrayList = flatList.getSelectedValue();
-            Months dialog = new Months(arrayList, Flatid);
-            dialog.setVisible(true);    
+            Months dialog = new Months(arrayList, Flatid);            dialog.setVisible(true);    
         }
     }//GEN-LAST:event_flatListMouseClicked
 

@@ -24,6 +24,10 @@ public class editCounters extends javax.swing.JFrame {
     boolean Is_Counter;
     String Type_Id;
     String text;
+    int FlatID;
+    String delete;
+String delete_List;
+String delete_id;
 
    public void select(int FlatID) {
        
@@ -38,14 +42,14 @@ public class editCounters extends javax.swing.JFrame {
             Connection c = null;//Соединение с БД
             c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
             Statement st = c.createStatement();//Готовим запрос
-            String selection = "SELECT * FROM SASHA.COUNTERS WHERE FLAT_ID = %d";
+            String selection = "SELECT * FROM SASHA.PAYMENT_DETAILS WHERE FLAT_ID = %d";
             String select = String.format(selection, FlatID);
             ResultSet rs = st.executeQuery(select);
             while(rs.next()) {
-            Type_Id = rs.getString("TYPE_ID");
-            text = rs.getString("COUNTERS_NAME");
+           // Type_Id = rs.getString("TYPE_ID");
+            text = rs.getString("COUNTER_NAME");
             Rate = rs.getDouble("RATE");
-            Is_Counter = rs.getBoolean("IS_COUNTER");
+           // Is_Counter = rs.getBoolean("IS_COUNTER");
             model.addElement(text);
             serviceList.setModel(model);
             }
@@ -59,10 +63,28 @@ public class editCounters extends javax.swing.JFrame {
      editCounters(int FlatID) {
        model = new DefaultListModel();
         initComponents();
+        this.FlatID = FlatID;
         select(FlatID);
        
     }
+public void deletion() {
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
 
+        try {
+            Class.forName(driver);
+            Connection c = null;
+            c = DriverManager.getConnection(url, user, password);
+            Statement st = c.createStatement();
+            String deletion = "DELETE FROM  SASHA.COUNTERS WHERE COUNTERS_NAME =  '%s'";
+            delete = String.format(deletion, delete_List);
+            st.executeUpdate(delete);
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+    }
+   }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -83,8 +105,8 @@ public class editCounters extends javax.swing.JFrame {
         jComboBox1 = new javax.swing.JComboBox();
         jTextField2 = new javax.swing.JTextField();
         jCheckBox1 = new javax.swing.JCheckBox();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        AddCounterButton = new javax.swing.JButton();
+        RemoveButton = new javax.swing.JButton();
         back = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -125,7 +147,6 @@ public class editCounters extends javax.swing.JFrame {
             }
         });
 
-        jCheckBox1.setEnabled(false);
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox1ActionPerformed(evt);
@@ -177,9 +198,19 @@ public class editCounters extends javax.swing.JFrame {
                 .addContainerGap(65, Short.MAX_VALUE))
         );
 
-        jButton1.setText("Add Counter");
+        AddCounterButton.setText("Add Counter");
+        AddCounterButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddCounterButtonActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Remove");
+        RemoveButton.setText("Remove");
+        RemoveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RemoveButtonActionPerformed(evt);
+            }
+        });
 
         back.setText("back");
         back.setToolTipText("");
@@ -195,35 +226,32 @@ public class editCounters extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                        .addComponent(AddCounterButton)
+                        .addGap(41, 41, 41)
+                        .addComponent(RemoveButton))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(58, 58, 58)
+                        .addGap(50, 50, 50)
                         .addComponent(back)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(32, 32, 32)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
+                .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
+                    .addComponent(AddCounterButton)
+                    .addComponent(RemoveButton)
                     .addComponent(back))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -261,15 +289,33 @@ public class editCounters extends javax.swing.JFrame {
    this.setVisible(false);
     }//GEN-LAST:event_backActionPerformed
 
+    private void AddCounterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddCounterButtonActionPerformed
+    newCounter dialog = new newCounter(FlatID, model);dialog.setVisible(true);
+    }//GEN-LAST:event_AddCounterButtonActionPerformed
+
+    private void RemoveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveButtonActionPerformed
+         int[] indexesForDeletion = serviceList.getSelectedIndices();
+       
+
+delete_List = (String) serviceList.getSelectedValue();
+
+deletion(); 
+        for (int i = 0; i < indexesForDeletion.length; i++) {
+            model.remove(indexesForDeletion[i]);
+           
+            
+        }   
+    }//GEN-LAST:event_RemoveButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AddCounterButton;
+    private javax.swing.JButton RemoveButton;
     private javax.swing.JButton back;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
