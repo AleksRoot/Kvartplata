@@ -11,6 +11,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Locale;
 import javax.swing.DefaultListModel;
 
 /**
@@ -21,6 +23,7 @@ public class editCounters extends javax.swing.JFrame {
 
     public DefaultListModel model;
     double Rate;
+    double Rate2;
     boolean Is_Counter;
     String Type_Id;
     String text;
@@ -28,8 +31,30 @@ public class editCounters extends javax.swing.JFrame {
     String delete;
 String delete_List;
 String delete_id;
+String RF;
+double RF2;
+String R150F;
+double R150F2;
+int monthNumber;
+int number;
+String Name;
+String CounterName;
+ArrayList al = new ArrayList();
+ArrayList al2 = new ArrayList();
+ArrayList al3 = new ArrayList();
 
-   public void select(int FlatID) {
+  
+     editCounters( int monthNumber, int FlatID) {
+         this.monthNumber =  monthNumber;
+       model = new DefaultListModel();
+        initComponents();
+        Rate150Field.setVisible(false);
+        Rate150Label.setVisible(false);
+        this.FlatID = FlatID;
+        select();
+       
+    }
+      public void select() {
        
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -42,13 +67,19 @@ String delete_id;
             Connection c = null;//Соединение с БД
             c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
             Statement st = c.createStatement();//Готовим запрос
-            String selection = "SELECT * FROM SASHA.PAYMENT_DETAILS WHERE FLAT_ID = %d";
-            String select = String.format(selection, FlatID);
+            String select = "SELECT * FROM SASHA.COUNTER_TYPE";
+            
             ResultSet rs = st.executeQuery(select);
             while(rs.next()) {
            // Type_Id = rs.getString("TYPE_ID");
             text = rs.getString("COUNTER_NAME");
             Rate = rs.getDouble("RATE");
+            Rate2 = rs.getDouble("RATE2");
+            Is_Counter = rs.getBoolean("IS_COUNTER");
+            al.add(text);
+            al.add(Rate);
+            al2.add(Rate2);
+            al3.add(Is_Counter);
            // Is_Counter = rs.getBoolean("IS_COUNTER");
             model.addElement(text);
             serviceList.setModel(model);
@@ -59,13 +90,6 @@ String delete_id;
             String a = e.getMessage();
         }
              
-    }
-     editCounters(int FlatID) {
-       model = new DefaultListModel();
-        initComponents();
-        this.FlatID = FlatID;
-        select(FlatID);
-       
     }
 public void deletion() {
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
@@ -85,6 +109,72 @@ public void deletion() {
             String a = e.getMessage();
     }
    }
+ public void update_counters() {
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String update = "UPDATE SASHA.COUNTER_TYPE SET RATE = %f, IS_COUNTER = %b WHERE COUNTER_NAME = '%s'";
+            String updation = String.format(Locale.ENGLISH,update, RF2, Is_Counter, CounterName);
+             st.execute(updation);
+
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+
+    }
+ public void update_counter() {
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String update = "UPDATE SASHA.PAYMENT_DETAILS SET RATE = %f, RATE2 = %f WHERE COUNTER_NAME = '%s'";
+            String updation = String.format(Locale.ENGLISH,update, RF2,  R150F2,CounterName);
+             st.execute(updation);
+
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+
+    }
+ public void update_counters2() {
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String update = "UPDATE SASHA.COUNTER_TYPE SET RATE = %f, RATE2 = %f WHERE COUNTER_NAME = '%s'";
+            String updation = String.format(Locale.ENGLISH,update, RF2, R150F2, CounterName);
+             st.execute(updation);
+
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -98,18 +188,18 @@ public void deletion() {
         serviceList = new javax.swing.JList();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox();
-        jTextField2 = new javax.swing.JTextField();
+        NameField = new javax.swing.JTextField();
+        RateField = new javax.swing.JTextField();
         jCheckBox1 = new javax.swing.JCheckBox();
+        Rate150Label = new javax.swing.JLabel();
+        Rate150Field = new javax.swing.JTextField();
         AddCounterButton = new javax.swing.JButton();
         RemoveButton = new javax.swing.JButton();
-        back = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        SaveButton = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        BackButton = new javax.swing.JButton();
 
         serviceList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -123,27 +213,20 @@ public void deletion() {
 
         jLabel1.setText("Name");
 
-        jLabel2.setText("Type");
-
         jLabel3.setText("Rate");
 
         jLabel4.setText("Is Counter");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        NameField.setEditable(false);
+        NameField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                NameFieldActionPerformed(evt);
             }
         });
 
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        RateField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
-
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                RateFieldActionPerformed(evt);
             }
         });
 
@@ -153,6 +236,8 @@ public void deletion() {
             }
         });
 
+        Rate150Label.setText("Rate > 150");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -160,21 +245,18 @@ public void deletion() {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCheckBox1))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3))
-                        .addGap(34, 34, 34)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField1)
-                            .addComponent(jComboBox1, 0, 115, Short.MAX_VALUE))))
-                .addContainerGap(220, Short.MAX_VALUE))
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3)
+                    .addComponent(Rate150Label)
+                    .addComponent(jLabel4))
+                .addGap(40, 40, 40)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBox1)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(NameField, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                        .addComponent(RateField, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                        .addComponent(Rate150Field)))
+                .addContainerGap(105, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -182,20 +264,20 @@ public void deletion() {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(NameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(RateField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(Rate150Label)
+                    .addComponent(Rate150Field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
                     .addComponent(jCheckBox1))
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         AddCounterButton.setText("Add Counter");
@@ -212,11 +294,21 @@ public void deletion() {
             }
         });
 
-        back.setText("back");
-        back.setToolTipText("");
-        back.addActionListener(new java.awt.event.ActionListener() {
+        SaveButton.setText("Save");
+        SaveButton.setToolTipText("");
+        SaveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backActionPerformed(evt);
+                SaveButtonActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("jButton1");
+
+        BackButton.setText("Back");
+        BackButton.setToolTipText("");
+        BackButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BackButtonActionPerformed(evt);
             }
         });
 
@@ -238,8 +330,15 @@ public void deletion() {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(50, 50, 50)
-                        .addComponent(back)))
+                        .addComponent(SaveButton)
+                        .addGap(72, 72, 72)
+                        .addComponent(BackButton)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jButton1)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -247,50 +346,104 @@ public void deletion() {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE))
                 .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(AddCounterButton)
                     .addComponent(RemoveButton)
-                    .addComponent(back))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(SaveButton)
+                    .addComponent(BackButton))
+                .addContainerGap(16, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jButton1)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void NameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NameFieldActionPerformed
        
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_NameFieldActionPerformed
 
     private void serviceListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_serviceListMouseClicked
-      String Rate2 = Double.toString(Rate);
-        jTextField2.setText(Rate2);
-        jTextField1.setText(text);
-       if (Is_Counter == true) {
-       jCheckBox1.setSelected(true);
+RateField.setEditable(true);
+Rate150Field.setVisible(false);
+Rate150Label.setVisible(false);
+        number = serviceList.getSelectedIndex();
+    Name =  (String)al.get((number)*2);
+     NameField.setText(Name);
+        String Rate2 =    String.valueOf(al.get((number*2 + 1))) ;
+        RateField.setText(Rate2);
+        //№3... 3 - 1 = 2.... a v array №5. №4... 4 -1 = 3. a v array №7
+      if ((boolean)al3.get(number) == true){
+jCheckBox1.setSelected(true);
+}
+else jCheckBox1.setSelected(false);
+       
+        if ("Холодна вода кухня".equals(Name)){
+         Rate2 =    String.valueOf(al.get((1))) ;
+        RateField.setText(Rate2);
+        
+       
+RateField.setEditable(false);
+        }
+        
+        if ("Стоки кухня".equals(Name)){
+        Rate2 =    String.valueOf(al.get((5))) ;
+        RateField.setText(Rate2);
+        
+       
+RateField.setEditable(false);
+        }
+       
+       if ("Електроенергія".equals(Name))
+       {
+           
+Rate150Field.setVisible(true);
+Rate150Label.setVisible(true);
+String Rate3 = String.valueOf(al2.get((number))) ;
+Rate150Field.setText(Rate3);
+
        }
-       else jCheckBox1.setSelected(false);
     }//GEN-LAST:event_serviceListMouseClicked
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void RateFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RateFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_RateFieldActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
        
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
-    private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
-   this.setVisible(false);
-    }//GEN-LAST:event_backActionPerformed
+    private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
+
+Rate150Field.setVisible(false);
+Rate150Label.setVisible(false);
+CounterName = NameField.getText();
+RF = RateField.getText();
+RF2 = Double.parseDouble(RF);
+if (jCheckBox1.isSelected()){
+Is_Counter = true;
+}
+else Is_Counter = false;
+update_counters();
+
+if ("Електроенергія".equals(Name)){
+    R150F = Rate150Field.getText();
+R150F2 = Double.parseDouble(R150F);
+      update_counters2();
+      }
+ model.removeAllElements();
+ serviceList.removeAll();
+select();
+update_counter();
+    }//GEN-LAST:event_SaveButtonActionPerformed
 
     private void AddCounterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddCounterButtonActionPerformed
-    newCounter dialog = new newCounter(FlatID, model);dialog.setVisible(true);
+    newCounter dialog = new newCounter(model);dialog.setVisible(true);
     }//GEN-LAST:event_AddCounterButtonActionPerformed
 
     private void RemoveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveButtonActionPerformed
@@ -307,6 +460,10 @@ deletion();
         }   
     }//GEN-LAST:event_RemoveButtonActionPerformed
 
+    private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
+         this.setVisible(false);
+    }//GEN-LAST:event_BackButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -314,18 +471,20 @@ deletion();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddCounterButton;
+    private javax.swing.JButton BackButton;
+    private javax.swing.JTextField NameField;
+    private javax.swing.JTextField Rate150Field;
+    private javax.swing.JLabel Rate150Label;
+    private javax.swing.JTextField RateField;
     private javax.swing.JButton RemoveButton;
-    private javax.swing.JButton back;
+    private javax.swing.JButton SaveButton;
+    private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JList serviceList;
     // End of variables declaration//GEN-END:variables
 }

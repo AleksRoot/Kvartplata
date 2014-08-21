@@ -8,8 +8,10 @@ package kvartplata;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +27,7 @@ public class addFlat extends javax.swing.JFrame {
    int idd;
     public DefaultListModel model;
     public DefaultListModel model2;
-   
+   ArrayList al = new ArrayList();
     public void insertBase()  {
            String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -51,6 +53,51 @@ public class addFlat extends javax.swing.JFrame {
        this.model = model;
        this.model2 = model2;
        
+    }
+    public void select_counters2() {
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            Connection c = null;
+            c = DriverManager.getConnection(url, user, password);
+            Statement st = c.createStatement();
+            String selection = "SELECT * FROM  SASHA.COUNTER_TYPE";
+            String select = String.format(selection);
+            ResultSet rs = st.executeQuery(select);
+            while (rs.next()) {
+                String text = rs.getString("COUNTER_NAME");
+                al.add(text);
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+
+    }
+
+    public void insert_counters2() {
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            Connection c = null;
+            c = DriverManager.getConnection(url, user, password);
+            Statement st = c.createStatement();
+            String insertion = "INSERT INTO SASHA.COUNTERS(COUNTERS_NAME, FLAT_ID) VALUES ('%s', %d)";
+            for (int i = 0; i < al.size(); i++) {
+                String insert = String.format(insertion, al.get(i), idd);
+                st.execute(insert);
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+
     }
 
     /**
@@ -172,6 +219,8 @@ public class addFlat extends javax.swing.JFrame {
      model2.addElement(id);
       flat f = new flat();
       f.select_flat();
+       select_counters2();
+       insert_counters2();
       this.setVisible(false);
       
       

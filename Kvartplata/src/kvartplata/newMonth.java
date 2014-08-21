@@ -7,8 +7,10 @@ package kvartplata;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Locale;
 import javax.swing.DefaultListModel;
 
@@ -17,23 +19,26 @@ import javax.swing.DefaultListModel;
  * @author Саша
  */
 public class newMonth extends javax.swing.JFrame {
-public DefaultListModel model;
-public DefaultListModel model2;
+    
+    public DefaultListModel model;
+    public DefaultListModel model2;
     String Month;
     String MonthNumber;
-    int MN ;
+    int MN;
     int Flatid;
-  Object arrayList;
-
-    public newMonth(int FlatID, DefaultListModel model, DefaultListModel model2, Object arrayList) {
-      this.arrayList=arrayList;
+    Object arrayList;
+    ArrayList al = new ArrayList();
+    ArrayList al2 = new ArrayList();
+    String TOTAL;
+    public newMonth(int FlatID, DefaultListModel model, DefaultListModel model2, Object arrayList, String TOTAL) {
+        this.arrayList = arrayList;
         Flatid = FlatID;
         initComponents();
- this.model = model;
-  this.model2 = model2;
- 
+        this.model = model;
+        this.model2 = model2;
+        this.TOTAL = TOTAL;
     }
-
+    
     public void insert_month() {
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -45,14 +50,63 @@ public DefaultListModel model2;
             Connection c = null;
             c = DriverManager.getConnection(url, user, password);
             Statement st = c.createStatement();
-           String insertion = "INSERT INTO SASHA.PAYMENT(FLAT_ID, PAYMENT_ID, DATE) VALUES (%d, %d, '%s')";
-             String insert = String.format( insertion, Flatid, MN, Month);
+            String insertion = "INSERT INTO SASHA.PAYMENT(FLAT_ID, PAYMENT_ID, DATE) VALUES (%d, %d, '%s')";
+            String insert = String.format(insertion, Flatid, MN, Month);
             
             st.execute(insert);
         } catch (ClassNotFoundException | SQLException e) {
             String a = e.getMessage();
         }
+        
+    }
+    
+    public void select_counters() {
+        
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
 
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String selection = "SELECT * FROM SASHA.COUNTERS WHERE FLAT_ID = %d";
+            String select = String.format(selection, Flatid);
+            ResultSet rs = st.executeQuery(select);
+            while (rs.next()) {
+                String text = rs.getString("COUNTERS_NAME");
+                al2.add(text);
+            }
+            
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+        
+    }
+
+    public void insert_counters() {
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            Connection c = null;
+            c = DriverManager.getConnection(url, user, password);
+            Statement st = c.createStatement();
+            String insertion = "INSERT INTO SASHA.PAYMENT_DETAILS(FLAT_ID, COUNTER_NAME, PAYMENT_ID) VALUES (%d, '%s', %d)";
+            for (int i = 0; i < al2.size(); i++) {
+                String insert = String.format(insertion, Flatid, al2.get(i), MN);
+                st.execute(insert);
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+        
     }
 
     /**
@@ -73,14 +127,14 @@ public DefaultListModel model2;
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        MonthName.setFont(new java.awt.Font("Tahoma", 2, 14)); // NOI18N
+        MonthName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         MonthName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MonthNameActionPerformed(evt);
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel1.setText("Month name");
 
         okButton.setText("OK");
@@ -151,13 +205,15 @@ public DefaultListModel model2;
         
         MonthNumber = jTextField1.getText();
         MN = Integer.parseInt(MonthNumber);
-         Month = MonthName.getText();
+        Month = MonthName.getText();
         insert_month();
+        select_counters();
+        insert_counters();
         model.addElement(Month);
         model2.addElement(MonthNumber);
-         Months p =new Months(arrayList,Flatid);
-     
+        Months p = new Months(arrayList, Flatid);
         p.select_month(Flatid);
+        
         this.setVisible(false);
         
 

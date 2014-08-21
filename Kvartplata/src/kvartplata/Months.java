@@ -10,6 +10,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Locale;
 import javax.swing.DefaultListModel;
 
 /**
@@ -20,6 +22,7 @@ public class Months extends javax.swing.JFrame {
 
     public DefaultListModel model;
     public DefaultListModel model2;
+     ArrayList al = new ArrayList();
     int FlatID;
 Object arrList;
 int payment_id;
@@ -27,8 +30,16 @@ String sel;
   String delete;
 String delete_List;
 String delete_id;
+String TOTAL;
+int monthNumber;
+String totaled;
+Double total;
+
+
+
     Months(Object arrayList, int Flatid) {
        this.arrList= arrayList;
+       
         model = new DefaultListModel();
         model2 = new DefaultListModel();
         initComponents();
@@ -37,7 +48,7 @@ String delete_id;
         jLabel1.setText(sel);
         select_month(Flatid);
         FlatID = Flatid;
-        jTextArea1.setText("lalala \nololo");
+       
     }
 
     public void select_month(int Flatid) {
@@ -81,13 +92,70 @@ String delete_id;
             Connection c = null;
             c = DriverManager.getConnection(url, user, password);
             Statement st = c.createStatement();
-            String deletion = "DELETE FROM SASHA.PAYMENT WHERE PAYMENT_NAME =  '%s'";
+            String deletion = "DELETE FROM SASHA.PAYMENT WHERE DATE =  '%s'";
             delete = String.format(deletion, delete_List);
             st.executeUpdate(delete);
         } catch (ClassNotFoundException | SQLException e) {
             String a = e.getMessage();
     }
    }
+ public void select_counters() {
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String selection = "SELECT * FROM SASHA.PAYMENT_DETAILS WHERE FLAT_ID = %d AND PAYMENT_ID = %d";
+            String select = String.format(selection, FlatID, monthNumber);
+            ResultSet rs = st.executeQuery(select);
+            while (rs.next()) {
+                String text = rs.getString("COUNTER_NAME");
+             double Total = rs.getDouble("TOTAL");
+                al.add(text);
+                al.add(Total);
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+
+    }
+ public void select_total() {
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String selection = "SELECT * FROM SASHA.PAYMENT WHERE PAYMENT_ID = %d AND FLAT_ID = %d";
+            String select = String.format(selection, monthNumber, FlatID);
+            ResultSet rs = st.executeQuery(select);
+
+            while (rs.next()) {
+
+                
+                total =  rs.getDouble("TOTAL_COST");
+                
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -108,8 +176,6 @@ String delete_id;
         back = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         monthList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -202,24 +268,37 @@ String delete_id;
     }// </editor-fold>//GEN-END:initComponents
 
     private void monthListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_monthListMouseClicked
-        if (evt.getClickCount() == 2) {
+         TOTAL = "";
+         
+        monthNumber = monthList.getSelectedIndex() + 1;
+          select_counters();
+           for (int i =0;i<al.size();i=i+2){
+        totaled = "'%s' = '%s'";
+        TOTAL = TOTAL + String.format(totaled, al.get(i), al.get(i+1)) + "\n";
+        }
+           select_total();
+           TOTAL = TOTAL + "\n"+ "Загальна сума = "  + String.valueOf(total);
+          jTextArea1.setText(TOTAL);
+          al.clear();
+         if (evt.getClickCount() == 2) {
            // Object array = monthList.getSelectedValue();
             // String select = (String) array;
-       int index = monthList.getSelectedIndex() + 1;
-        Object arrayList = monthList.getSelectedValue();  
+        
+        Object monthName = monthList.getSelectedValue();  
           
-        PaymentCounter dialog = new PaymentCounter(index, arrayList);  dialog.setVisible(true);   
+       PaymentCounter dialog = new PaymentCounter(monthNumber, monthName, FlatID,  arrList);  dialog.setVisible(true);   
            
         }
     }//GEN-LAST:event_monthListMouseClicked
 
     private void editCounterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editCounterActionPerformed
-        editCounters dialog3 = new editCounters(FlatID);         dialog3.setVisible(true);
+          monthNumber = monthList.getSelectedIndex() + 1;
+        editCounters dialog3 = new editCounters(monthNumber, FlatID);         dialog3.setVisible(true);
     }//GEN-LAST:event_editCounterActionPerformed
 
     private void addMonthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMonthActionPerformed
 
-        newMonth dialog2 = new newMonth(FlatID, model, model2, arrList);        dialog2.setVisible(true);
+        newMonth dialog2 = new newMonth(FlatID, model, model2, arrList, TOTAL);        dialog2.setVisible(true);
     }//GEN-LAST:event_addMonthActionPerformed
 
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed

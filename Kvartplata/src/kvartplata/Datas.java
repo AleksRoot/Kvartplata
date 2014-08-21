@@ -14,9 +14,15 @@ public class Datas {
     double new_counter;
     double previous_counter;
     double rate;
+    double rate2;
+    String rate3;
+    String total2;
+     String total3;
     double counter_difference;
+    double counter_difference2;
     double total;
     int payment_id;
     int id;
     String text;
+    String Name;
 }

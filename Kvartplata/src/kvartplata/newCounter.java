@@ -20,7 +20,7 @@ public class newCounter extends javax.swing.JFrame {
 int FlatID;
   String name;
   public DefaultListModel model;
-    public newCounter(int FlatID, DefaultListModel model) {
+    public newCounter( DefaultListModel model) {
         initComponents();
         this.FlatID = FlatID;
         this.model = model;
@@ -38,8 +38,8 @@ int FlatID;
             Connection c = null;
             c = DriverManager.getConnection(url, user, password);
             Statement st = c.createStatement();
-           String insertion = "INSERT INTO SASHA.COUNTERS(COUNTERS_NAME, FLAT_ID) VALUES ('%s', %d)";
-             String insert = String.format( insertion, name, FlatID);
+           String insertion = "INSERT INTO SASHA.COUNTER_TYPE(COUNTER_NAME) VALUES ('%s')";
+             String insert = String.format( insertion, name);
             
             st.execute(insert);
         } catch (ClassNotFoundException | SQLException e) {
