@@ -27,10 +27,14 @@ public class newMonth extends javax.swing.JFrame {
     int MN;
     int Flatid;
     Object arrayList;
+     ArrayList al3 = new ArrayList();
     ArrayList al = new ArrayList();
     ArrayList al2 = new ArrayList();
     String TOTAL;
-    public newMonth(int FlatID, DefaultListModel model, DefaultListModel model2, Object arrayList, String TOTAL) {
+    Datas data = new Datas();
+    
+    public newMonth(int FlatID, DefaultListModel model, DefaultListModel model2, Object arrayList, String TOTAL, ArrayList al3) {
+         this.al3 = al3;
         this.arrayList = arrayList;
         Flatid = FlatID;
         initComponents();
@@ -73,12 +77,15 @@ public class newMonth extends javax.swing.JFrame {
             Connection c = null;//Соединение с БД
             c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
             Statement st = c.createStatement();//Готовим запрос
-            String selection = "SELECT * FROM SASHA.COUNTERS WHERE FLAT_ID = %d";
-            String select = String.format(selection, Flatid);
-            ResultSet rs = st.executeQuery(select);
+            String selection = "SELECT * FROM SASHA.COUNTER_TYPE";
+            ResultSet rs = st.executeQuery(selection);
             while (rs.next()) {
-                String text = rs.getString("COUNTERS_NAME");
-                al2.add(text);
+                data.text = rs.getString("COUNTER_NAME");
+                data.rate = rs.getDouble("RATE");
+                data.rate2 = rs.getDouble("RATE2");
+                al2.add(data.text);
+                al2.add(data.rate);
+                al2.add(data.rate2);
             }
             
         } catch (ClassNotFoundException | SQLException e) {
@@ -98,9 +105,9 @@ public class newMonth extends javax.swing.JFrame {
             Connection c = null;
             c = DriverManager.getConnection(url, user, password);
             Statement st = c.createStatement();
-            String insertion = "INSERT INTO SASHA.PAYMENT_DETAILS(FLAT_ID, COUNTER_NAME, PAYMENT_ID) VALUES (%d, '%s', %d)";
-            for (int i = 0; i < al2.size(); i++) {
-                String insert = String.format(insertion, Flatid, al2.get(i), MN);
+            String insertion = "INSERT INTO SASHA.PAYMENT_DETAILS(FLAT_ID, COUNTER_NAME, RATE, RATE2, PAYMENT_ID) VALUES (%d, '%s', %f, %f, %d)";
+            for (int i = 0; i < al2.size(); i=i+3) {
+                String insert = String.format(Locale.ENGLISH, insertion, Flatid, al2.get(i), al2.get(i+1), al2.get(i+2), MN);
                 st.execute(insert);
             }
         } catch (ClassNotFoundException | SQLException e) {
@@ -211,9 +218,14 @@ public class newMonth extends javax.swing.JFrame {
         insert_counters();
         model.addElement(Month);
         model2.addElement(MonthNumber);
-        Months p = new Months(arrayList, Flatid);
-        p.select_month(Flatid);
-        
+       Months m = new Months(arrayList, Flatid);
+     m.select_month(Flatid);
+      try {
+   Thread.sleep(1000);
+   // any action
+} catch (InterruptedException e) {
+   e.printStackTrace();
+}
         this.setVisible(false);
         
 

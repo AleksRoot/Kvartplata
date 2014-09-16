@@ -412,6 +412,7 @@ String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TO
          Rate150Field.setText(data.rate3);
          jLabel2.setVisible(true);
         }
+        
         int i = (number)*5;
        boolean True_False = (boolean) al4.get(number);
        if (True_False == true){
@@ -430,11 +431,24 @@ String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TO
        jLabel6.setVisible(false);
        CounterDifferenceLabel.setVisible(false);
        }
+         
        String NC = Double.toString((double) al.get(i));
         NewCounterLabel.setText(NC);
          String PC = Double.toString((double) al.get(i+1));
         PreviousCounterLabel.setText(PC);
         String RA = Double.toString((double) al.get(i+2));
+        if ("Стоки туалет".equals(data.Name)){
+            NC = Double.toString((double) al.get(0));
+        NewCounterLabel.setText(NC);
+          PC = Double.toString((double) al.get(1));
+        PreviousCounterLabel.setText(PC);
+          }
+           if ("Стоки кухня".equals(data.Name)){
+            NC = Double.toString((double) al.get(5));
+        NewCounterLabel.setText(NC);
+          PC = Double.toString((double) al.get(6));
+        PreviousCounterLabel.setText(PC);
+          }
         RateLabel.setText(RA);
         String CD = Double.toString((double) al.get(i+3));
         CounterDifferenceLabel.setText(CD);
@@ -473,12 +487,13 @@ String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TO
        model.removeAllElements();
        al.clear();
        al2.clear();
+       select_counters(monthNumber,FlatID);
       Total = (double) al3.get(0);
       for (int i=1;i<al3.size();i++){
       Total = Total + (double) al3.get(i);
       }
       total();
-       select_counters(monthNumber,FlatID);
+       
        
         
      

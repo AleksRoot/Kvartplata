@@ -10,8 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Locale;
+import java.util.*;
 
 /**
  *
@@ -20,17 +19,28 @@ import java.util.Locale;
 public class test {
    
     public static void main(String[] args) {
-        double counter_difference = 250;
-        double rate2 = 1.0;
-       double rate = 2.0;
-       String total2;
-        String total3;
- total2 = "(%f-150)*%f + 150 * %f)";
- total3 = String.format(total2, counter_difference, rate2, rate);
+        Scanner robot = new Scanner(System.in);
+     double a = 5; 
+     int b;
+     System.out.println("a = " + a);
      
-      System.out.println(total3);
-       
-  
-      
+    
+       do {
+            System.out.println("Zminutu a?");
+            System.out.println("1.Tak");
+            System.out.println("2.Ni");
+            
+           
+            b = robot.nextInt();
+        } while (b != 1 && b != 2);
+        switch (b) {
+            case 1:
+                System.out.println("Vvedit' nove a:");
+                a = robot.nextInt();
+                break;
+            case 2:
+            break;
+        }
+        System.out.println("a = " + a);
 }
 }

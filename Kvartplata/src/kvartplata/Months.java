@@ -30,6 +30,7 @@ String sel;
   String delete;
 String delete_List;
 String delete_id;
+int DeleteNumber;
 String TOTAL;
 int monthNumber;
 String totaled;
@@ -93,7 +94,27 @@ Double total;
             c = DriverManager.getConnection(url, user, password);
             Statement st = c.createStatement();
             String deletion = "DELETE FROM SASHA.PAYMENT WHERE DATE =  '%s'";
+            
             delete = String.format(deletion, delete_List);
+            st.executeUpdate(delete);
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+    }
+   }
+ public void delete_payment_counter() {
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            Connection c = null;
+            c = DriverManager.getConnection(url, user, password);
+            Statement st = c.createStatement();
+            String deletion = "DELETE FROM SASHA.PAYMENT_DETAILS WHERE PAYMENT_ID =  %d";
+            
+            delete = String.format(deletion, DeleteNumber);
             st.executeUpdate(delete);
         } catch (ClassNotFoundException | SQLException e) {
             String a = e.getMessage();
@@ -293,12 +314,12 @@ Double total;
 
     private void editCounterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editCounterActionPerformed
           monthNumber = monthList.getSelectedIndex() + 1;
-        editCounters dialog3 = new editCounters(monthNumber, FlatID);         dialog3.setVisible(true);
+        editCounters dialog3 = new editCounters();         dialog3.setVisible(true);
     }//GEN-LAST:event_editCounterActionPerformed
 
     private void addMonthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addMonthActionPerformed
 
-        newMonth dialog2 = new newMonth(FlatID, model, model2, arrList, TOTAL);        dialog2.setVisible(true);
+       newMonth dialog2 = new newMonth(FlatID, model, model2, arrList, TOTAL, al);        dialog2.setVisible(true);
     }//GEN-LAST:event_addMonthActionPerformed
 
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
@@ -308,10 +329,11 @@ Double total;
     private void removeMonthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeMonthActionPerformed
        int[] indexesForDeletion = monthList.getSelectedIndices();
         int[] indexesForDeletion2 = jList1.getSelectedIndices();
-
+DeleteNumber = monthList.getSelectedIndex() + 1;
 delete_List = (String) monthList.getSelectedValue();
 delete_id = (String) jList1.getSelectedValue();
 deletion(); 
+delete_payment_counter();
         for (int i = 0; i < indexesForDeletion.length; i++) {
             model.remove(indexesForDeletion[i]);
             model2.remove(indexesForDeletion[i]);

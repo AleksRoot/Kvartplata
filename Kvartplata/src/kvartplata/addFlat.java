@@ -221,6 +221,12 @@ public class addFlat extends javax.swing.JFrame {
       f.select_flat();
        select_counters2();
        insert_counters2();
+        try {
+   Thread.sleep(1000);
+   // any action
+} catch (InterruptedException e) {
+   e.printStackTrace();
+}
       this.setVisible(false);
       
       

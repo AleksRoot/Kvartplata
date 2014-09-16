@@ -27,7 +27,7 @@ public class editCounters extends javax.swing.JFrame {
     boolean Is_Counter;
     String Type_Id;
     String text;
-    int FlatID;
+   
     String delete;
 String delete_List;
 String delete_id;
@@ -35,22 +35,23 @@ String RF;
 double RF2;
 String R150F;
 double R150F2;
-int monthNumber;
+
 int number;
 String Name;
 String CounterName;
 ArrayList al = new ArrayList();
 ArrayList al2 = new ArrayList();
 ArrayList al3 = new ArrayList();
+ Datas data = new Datas();
 
   
-     editCounters( int monthNumber, int FlatID) {
-         this.monthNumber =  monthNumber;
+     editCounters() {
+        
        model = new DefaultListModel();
         initComponents();
         Rate150Field.setVisible(false);
         Rate150Label.setVisible(false);
-        this.FlatID = FlatID;
+       
         select();
        
     }
@@ -72,16 +73,16 @@ ArrayList al3 = new ArrayList();
             ResultSet rs = st.executeQuery(select);
             while(rs.next()) {
            // Type_Id = rs.getString("TYPE_ID");
-            text = rs.getString("COUNTER_NAME");
-            Rate = rs.getDouble("RATE");
-            Rate2 = rs.getDouble("RATE2");
-            Is_Counter = rs.getBoolean("IS_COUNTER");
-            al.add(text);
-            al.add(Rate);
-            al2.add(Rate2);
-            al3.add(Is_Counter);
+           data.text = rs.getString("COUNTER_NAME");
+            data.rate = rs.getDouble("RATE");
+            data.rate2 = rs.getDouble("RATE2");
+            data.Is_Counter = rs.getBoolean("IS_COUNTER");
+            al.add(data.text);
+            al.add(data.rate);
+            al2.add(data.rate2);
+            al3.add(data.Is_Counter);
            // Is_Counter = rs.getBoolean("IS_COUNTER");
-            model.addElement(text);
+            model.addElement(data.text);
             serviceList.setModel(model);
             }
            
@@ -102,14 +103,14 @@ public void deletion() {
             Connection c = null;
             c = DriverManager.getConnection(url, user, password);
             Statement st = c.createStatement();
-            String deletion = "DELETE FROM  SASHA.COUNTERS WHERE COUNTERS_NAME =  '%s'";
+            String deletion = "DELETE FROM  SASHA.COUNTER_TYPE WHERE COUNTERS_NAME =  '%s'";
             delete = String.format(deletion, delete_List);
             st.executeUpdate(delete);
         } catch (ClassNotFoundException | SQLException e) {
             String a = e.getMessage();
     }
    }
- public void update_counters() {
+ public void update_counter() {
 
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -123,7 +124,7 @@ public void deletion() {
             c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
             Statement st = c.createStatement();//Готовим запрос
             String update = "UPDATE SASHA.COUNTER_TYPE SET RATE = %f, IS_COUNTER = %b WHERE COUNTER_NAME = '%s'";
-            String updation = String.format(Locale.ENGLISH,update, RF2, Is_Counter, CounterName);
+            String updation = String.format(Locale.ENGLISH,update, RF2, data.Is_Counter, CounterName);
              st.execute(updation);
 
         } catch (ClassNotFoundException | SQLException e) {
@@ -131,7 +132,29 @@ public void deletion() {
         }
 
     }
- public void update_counter() {
+ public void update_counters() {
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String update = "UPDATE SASHA.PAYMENT_DETAILS SET RATE = %f WHERE COUNTER_NAME = '%s'";
+            String updation = String.format(Locale.ENGLISH,update, RF2,  CounterName);
+             st.execute(updation);
+
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+
+    }
+ public void update_counter_el() {
 
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -153,7 +176,7 @@ public void deletion() {
         }
 
     }
- public void update_counters2() {
+ public void update_counters_el() {
 
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -175,6 +198,7 @@ public void deletion() {
         }
 
     }
+ 
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -426,20 +450,22 @@ CounterName = NameField.getText();
 RF = RateField.getText();
 RF2 = Double.parseDouble(RF);
 if (jCheckBox1.isSelected()){
-Is_Counter = true;
+data.Is_Counter = true;
 }
-else Is_Counter = false;
-update_counters();
+else data.Is_Counter = false;
+update_counter();
 
 if ("Електроенергія".equals(Name)){
     R150F = Rate150Field.getText();
 R150F2 = Double.parseDouble(R150F);
-      update_counters2();
+      update_counters_el();
+      update_counter_el();
       }
+update_counters();
  model.removeAllElements();
  serviceList.removeAll();
+ al.clear();
 select();
-update_counter();
     }//GEN-LAST:event_SaveButtonActionPerformed
 
     private void AddCounterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddCounterButtonActionPerformed

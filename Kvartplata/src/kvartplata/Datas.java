@@ -25,4 +25,5 @@ public class Datas {
     int id;
     String text;
     String Name;
+    boolean Is_Counter;
 }

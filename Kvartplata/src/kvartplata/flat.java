@@ -6,11 +6,7 @@
 package kvartplata;
 
 import java.awt.BorderLayout;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -25,9 +21,10 @@ addFlat af;
    String delete;
 String delete_List;
 String delete_id;
+int DeleteNumber;
 
     public DefaultListModel model;
-public DefaultListModel model2;
+public DefaultListModel model2; 
    public void select_flat() {
        
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
@@ -73,6 +70,25 @@ public DefaultListModel model2;
             Statement st = c.createStatement();
             String deletion = "DELETE FROM SASHA.FLAT WHERE FLAT_NAME =  '%s'";
             delete = String.format(deletion, delete_List);
+            st.executeUpdate(delete);
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+    }
+   }
+   public void delete_payment_counter() {
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            Connection c = null;
+            c = DriverManager.getConnection(url, user, password);
+            Statement st = c.createStatement();
+            String deletion = "DELETE FROM SASHA.PAYMENT_DETAILS WHERE FLAT_ID =  %d";
+            
+            delete = String.format(deletion, DeleteNumber);
             st.executeUpdate(delete);
         } catch (ClassNotFoundException | SQLException e) {
             String a = e.getMessage();
@@ -186,7 +202,9 @@ int[] indexesForDeletion = flatList.getSelectedIndices();
 int[] indexesForDeletion2 = NumberList.getSelectedIndices();
 delete_List = (String) flatList.getSelectedValue();
 delete_id = (String) NumberList.getSelectedValue();
+DeleteNumber = flatList.getSelectedIndex();
 deletion(); 
+delete_payment_counter();
         for (int i = 0; i < indexesForDeletion.length; i++) {
             model.remove(indexesForDeletion[i]);
             model2.remove(indexesForDeletion[i]);
