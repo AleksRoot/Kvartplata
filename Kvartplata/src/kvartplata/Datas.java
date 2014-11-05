@@ -26,4 +26,5 @@ public class Datas {
     String text;
     String Name;
     boolean Is_Counter;
+    double last_first;
 }

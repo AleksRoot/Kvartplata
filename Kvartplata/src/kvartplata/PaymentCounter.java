@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import javax.swing.DefaultListModel;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -30,6 +31,7 @@ public class PaymentCounter extends javax.swing.JFrame {
     ArrayList al2 = new ArrayList();
     ArrayList al3 = new ArrayList();
     ArrayList al4 = new ArrayList();
+    DecimalFormat df = new DecimalFormat("#.##");
     Datas data = new Datas();
 Object Array;
 Object Name;
@@ -42,161 +44,56 @@ double RL2;
 String CurrentName;
 int FlatID;
 String t;
-
+String sel2;
 String totaled;
     Object arrayList;
     double Total;
+    String Year;
+    String Language_text;
     
-    
-PaymentCounter(int monthNumber, Object monthName, int FlatID,Object arrayList) {
+PaymentCounter(int monthNumber, String sel2, int FlatID,Object arrayList, String Year, String Language_text) {
+    this.Language_text = Language_text;
       model = new DefaultListModel();
-      this.Array = monthName;
+      this.sel2 = sel2;
       this.arrayList=arrayList;
       this.FlatID = FlatID;
+      this.Year = Year;
       
-      sel = (String) Array;
+     
     
         
         initComponents();
         this.monthNumber = monthNumber;
-        select_counters(monthNumber, FlatID);
- jLabel1.setText(sel);
+        select_counters2(monthNumber, FlatID);
+ jLabel1.setText(sel2);
   Rate150Field.setVisible(false);
              Calculation.setVisible(false);
              jLabel2.setVisible(false);
-    }
-
-    public void select_counters(int monthNumber, int FlatID) {
-
-        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
-        String user = "sasha";//Логин пользователя
-        String password = "sasha";//Пароль пользователя
-        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
-
-        try {
-            Class.forName(driver);
-            //Регистрируем драйвер
-            Connection c = null;//Соединение с БД
-            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
-            Statement st = c.createStatement();//Готовим запрос
-            String selection = "SELECT * FROM SASHA.PAYMENT_DETAILS WHERE PAYMENT_ID = %d AND FLAT_ID = %d";
-            String select = String.format(selection, monthNumber, FlatID);
-            ResultSet rs = st.executeQuery(select);
-
-            while (rs.next()) {
-
-                data.text = rs.getString("COUNTER_NAME");
-                data.new_counter = rs.getDouble("NEW_COUNTER");
-                data.previous_counter = rs.getDouble("PREVIOUS_COUNTER");
-               data.rate = rs.getDouble("RATE");
-               
-                data.counter_difference = data.new_counter - data.previous_counter;
-                data.total = data.counter_difference * data.rate;
-                if ("Електроенергія".equals(data.text) && data.counter_difference > 150){
-                    data.rate2 = rs.getDouble("RATE2");
-                
-                data.total = (data.counter_difference-150)*data.rate2 + 150 * data.rate;
-                data.rate3 =String.valueOf(data.rate2);
-                data.total2 ="(%f-150)*%f + 150 * %f)";
-               data.total3 = String.format(data.total2, data.counter_difference, data.rate2, data.rate);
-                }
-                //al.add(data);
-                al.add(data.new_counter);  al.add(data.previous_counter);  al.add(data.rate); al.add(data.counter_difference); al.add(data.total);
-                 al2.add(data.counter_difference); al2.add(data.total); al2.add(data.text);
-                 al3.add(data.total);
-                model.addElement(data.text);
-
-                CounterList.setModel(model);
-            }
-String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TOTAL = %f "
-        + "WHERE COUNTER_NAME = '%s' AND FLAT_ID = %d AND PAYMENT_ID = %d";
-            for (int i = 0;i < al2.size(); i=i+3) {
-                 
-                String update1 = String.format(Locale.ENGLISH,updation1, al2.get(i), al2.get(i+1), al2.get(i+2), FlatID, monthNumber);
-               st.execute(update1);
-            }
-        } catch (ClassNotFoundException | SQLException e) {
-            String a = e.getMessage();
+               if (Language_text == "Укр") {
+       jLabel3.setText("Попередній показник");
+       jLabel4.setText("Новий показник");
+       jLabel5.setText("Тариф");
+       jLabel6.setText("Різниця показників");
+       jLabel7.setText("Сума");
+       jLabel2.setText("Тариф > 150");
+       SaveButton.setText("Зберегти");
+        CancelButton.setText("Назад");
+        jLabel8.setText("Сума для тарифу > 150");
         }
-
+        else {
+        jLabel3.setText("Previous counter");
+        jLabel4.setText("New counter");
+        jLabel5.setText("Rate");
+        jLabel6.setText("Counter Difference");
+        jLabel7.setText("Total");
+        jLabel2.setText("Rate > 150");
+        SaveButton.setText("Save");
+        CancelButton.setText("Back");
+        jLabel8.setText("Total for rate > 150");
+        }
     }
+
     
-      public void update_counters() {
-
-        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
-        String user = "sasha";//Логин пользователя
-        String password = "sasha";//Пароль пользователя
-        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
-
-        try {
-            Class.forName(driver);
-            //Регистрируем драйвер
-            Connection c = null;//Соединение с БД
-            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
-            Statement st = c.createStatement();//Готовим запрос
-            String update = "UPDATE SASHA.PAYMENT_DETAILS SET NEW_COUNTER = %f, PREVIOUS_COUNTER = %f, RATE = %f "
-                    + "WHERE COUNTER_NAME = '%s' AND FLAT_ID = %d AND PAYMENT_ID = %d";
-            String updation = String.format(Locale.ENGLISH,update, NCL2, PCL2, RL2, CurrentName, FlatID, monthNumber);
-             st.execute(updation);
-
-        } catch (ClassNotFoundException | SQLException e) {
-            String a = e.getMessage();
-        }
-
-    }
-
-   public void total() {
-
-        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
-        String user = "sasha";//Логин пользователя
-        String password = "sasha";//Пароль пользователя
-        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
-
-        try {
-            Class.forName(driver);
-            //Регистрируем драйвер
-            Connection c = null;//Соединение с БД
-            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
-            Statement st = c.createStatement();//Готовим запрос
-            String update = "UPDATE SASHA.PAYMENT SET TOTAL_COST = %f "
-                    + "WHERE FLAT_ID = %d AND PAYMENT_ID = %d";
-            String updation = String.format(Locale.ENGLISH, update,Total, FlatID, monthNumber);
-             st.execute(updation);
-
-        } catch (ClassNotFoundException | SQLException e) {
-            String a = e.getMessage();
-        }
-
-    }
-       public void true_false() {
-       
-        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
-        String user = "sasha";//Логин пользователя
-        String password = "sasha";//Пароль пользователя
-        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
-
-        try {
-            Class.forName(driver);
-            //Регистрируем драйвер
-            Connection c = null;//Соединение с БД
-            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
-            Statement st = c.createStatement();//Готовим запрос
-            String selection = "SELECT * FROM SASHA.COUNTER_TYPE ";
-            ResultSet rs = st.executeQuery(selection);
-            while(rs.next()) {
-            boolean tf = rs.getBoolean("IS_COUNTER");
-           al4.add(tf);
-            
-            
-            }
-            
-           
-            
-        } catch (ClassNotFoundException | SQLException e) {
-            String a = e.getMessage();
-        }
-             
-    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -224,6 +121,7 @@ String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TO
         jLabel2 = new javax.swing.JLabel();
         Rate150Field = new javax.swing.JTextField();
         Calculation = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
 
         CounterList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -264,7 +162,6 @@ String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TO
             }
         });
 
-        RateLabel.setEditable(false);
         RateLabel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 RateLabelActionPerformed(evt);
@@ -305,9 +202,17 @@ String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TO
         jLabel2.setText(" Rate > 150");
         jLabel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        Rate150Field.setEditable(false);
-
         Calculation.setEditable(false);
+        Calculation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CalculationActionPerformed(evt);
+            }
+        });
+
+        jLabel8.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel8.setText("Total for rate > 150");
+        jLabel8.setOpaque(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -341,7 +246,8 @@ String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TO
                                         .addComponent(CancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(8, 8, 8))
                                     .addComponent(Rate150Field)))
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 33, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -381,7 +287,9 @@ String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TO
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(CancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Calculation, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -399,6 +307,9 @@ String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TO
     }//GEN-LAST:event_PreviousCounterLabelActionPerformed
 
     private void CounterListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CounterListMouseClicked
+        RateLabel.setEditable(true);
+        NewCounterLabel.setEditable(true);
+        PreviousCounterLabel.setEditable(true);
         Rate150Field.setVisible(false);
              Calculation.setVisible(false);
              jLabel2.setVisible(false);
@@ -437,19 +348,34 @@ String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TO
          String PC = Double.toString((double) al.get(i+1));
         PreviousCounterLabel.setText(PC);
         String RA = Double.toString((double) al.get(i+2));
+        RateLabel.setText(RA);
+       
+        if ("Холодна вода кухня".equals(data.Name)){
+       RL = Double.toString((double) al.get(2));
+       RateLabel.setText(RL);
+       RateLabel.setEditable(false);
+        
+        }
         if ("Стоки туалет".equals(data.Name)){
             NC = Double.toString((double) al.get(0));
         NewCounterLabel.setText(NC);
+         NewCounterLabel.setEditable(false);
           PC = Double.toString((double) al.get(1));
         PreviousCounterLabel.setText(PC);
+        PreviousCounterLabel.setEditable(false);
           }
            if ("Стоки кухня".equals(data.Name)){
+                RL = Double.toString((double) al.get(12));
+       RateLabel.setText(RL);
+       RateLabel.setEditable(false);
             NC = Double.toString((double) al.get(5));
         NewCounterLabel.setText(NC);
+        NewCounterLabel.setEditable(false);
           PC = Double.toString((double) al.get(6));
         PreviousCounterLabel.setText(PC);
+        PreviousCounterLabel.setEditable(false);
           }
-        RateLabel.setText(RA);
+        
         String CD = Double.toString((double) al.get(i+3));
         CounterDifferenceLabel.setText(CD);
         String TO = Double.toString((double) al.get(i+4));
@@ -484,23 +410,186 @@ String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TO
        RL = RateLabel.getText();
        RL2 =Double.parseDouble(RL);
        update_counters();
+       update_rate();
        model.removeAllElements();
        al.clear();
        al2.clear();
-       select_counters(monthNumber,FlatID);
+       al3.clear();
+       select_counters2(monthNumber,FlatID);
       Total = (double) al3.get(0);
       for (int i=1;i<al3.size();i++){
       Total = Total + (double) al3.get(i);
+    
       }
+      
       total();
-       
-       
-        
-     
-       // this.setVisible(false);
-       // Months dialog = new Months(arrayList, FlatID, TOTAL);            dialog.setVisible(true);  
+      
     }//GEN-LAST:event_SaveButtonActionPerformed
 
+    private void CalculationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CalculationActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CalculationActionPerformed
+public void select_counters2(int monthNumber, int FlatID) {
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String selection = "SELECT * FROM SASHA.PAYMENT_DETAILS WHERE PAYMENT_ID = %d AND FLAT_ID = %d AND YEARS = '%s'";
+            String select = String.format(selection, monthNumber, FlatID, Year);
+            ResultSet rs = st.executeQuery(select);
+
+            while (rs.next()) {
+
+                data.text = rs.getString("COUNTER_NAME");
+                data.new_counter = rs.getDouble("NEW_COUNTER");
+                data.previous_counter = rs.getDouble("PREVIOUS_COUNTER");
+               data.rate = rs.getDouble("RATE");
+               
+                data.counter_difference = data.new_counter - data.previous_counter;
+                data.total = data.counter_difference * data.rate;
+                if ("Електроенергія".equals(data.text) && data.counter_difference > 150){
+                    data.rate2 = rs.getDouble("RATE2");
+               
+               data.total = (data.counter_difference-150)*data.rate2 + 150 * data.rate;
+                 
+                data.rate3 =String.valueOf(data.rate2);
+                data.total2 ="(%.2f-150)*%.2f + 150 * %.2f) = %.2f + %.2f";
+                double c1 = (data.counter_difference - 150)*data.rate2;
+                 double c2 = 150 * data.rate;
+                 
+               data.total3 = String.format(Locale.ENGLISH,data.total2, data.counter_difference, data.rate2, data.rate, c1, c2);
+                }
+                String nc1 = "%.2f"; nc1 = String.format(Locale.ENGLISH,nc1, data.new_counter); data.new_counter = Double.parseDouble(nc1);
+                String pc1 = "%.2f"; pc1 = String.format(Locale.ENGLISH,pc1, data.previous_counter);data.previous_counter = Double.parseDouble(pc1);
+                String r1 = "%.4f"; r1 = String.format(Locale.ENGLISH,r1, data.rate);data.rate = Double.parseDouble(r1);
+                 String cd1 = "%.2f"; cd1 = String.format(Locale.ENGLISH,cd1, data.counter_difference);data.counter_difference = Double.parseDouble(cd1);
+                  String t1 = "%.2f"; t1 = String.format(Locale.ENGLISH,t1, data.total);data.total = Double.parseDouble(t1);
+                al.add(data.new_counter);  al.add(data.previous_counter);  al.add(data.rate); al.add(data.counter_difference); al.add(data.total);
+                 al2.add(data.counter_difference); al2.add(data.total); al2.add(data.text);
+                 al3.add(data.total);
+                model.addElement(data.text);
+
+                CounterList.setModel(model);
+            }
+String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TOTAL = %f "
+        + "WHERE COUNTER_NAME = '%s' AND FLAT_ID = %d AND PAYMENT_ID = %d AND YEARS = '%s'";
+            for (int i = 0;i < al2.size(); i=i+3) {
+                 
+                String update1 = String.format(Locale.ENGLISH,updation1, al2.get(i), al2.get(i+1), al2.get(i+2), FlatID, monthNumber, Year);
+               st.execute(update1);
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+
+    }
+    
+      public void update_counters() {
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String update = "UPDATE SASHA.PAYMENT_DETAILS SET NEW_COUNTER = %f, PREVIOUS_COUNTER = %f, RATE = %f "
+                    + "WHERE COUNTER_NAME = '%s' AND FLAT_ID = %d AND PAYMENT_ID = %d AND YEARS = '%s'";
+            String updation = String.format(Locale.ENGLISH,update, NCL2, PCL2, RL2, CurrentName, FlatID, monthNumber, Year);
+             st.execute(updation);
+
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+
+    }
+public void update_rate() {
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String update = "UPDATE SASHA.COUNTER_TYPE SET RATE = %f "
+                    + "WHERE COUNTER_NAME = '%s'";
+            String updation = String.format(Locale.ENGLISH,update,  RL2, CurrentName);
+             st.execute(updation);
+
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+
+    }
+   public void total() {
+
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String update = "UPDATE SASHA.PAYMENT SET TOTAL_COST = %f "
+                    + "WHERE FLAT_ID = %d AND PAYMENT_ID = %d AND YEARS = '%s'";
+            String updation = String.format(Locale.ENGLISH, update,Total, FlatID, monthNumber, Year);
+             st.execute(updation);
+
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+
+    }
+       public void true_false() {
+       
+        String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
+        String user = "sasha";//Логин пользователя
+        String password = "sasha";//Пароль пользователя
+        String url = "jdbc:derby://localhost:1527/komynPoslygu";//URL адрес
+
+        try {
+            Class.forName(driver);
+            //Регистрируем драйвер
+            Connection c = null;//Соединение с БД
+            c = DriverManager.getConnection(url, user, password);//Установка соединения с БД
+            Statement st = c.createStatement();//Готовим запрос
+            String selection = "SELECT * FROM SASHA.COUNTER_TYPE ";
+            ResultSet rs = st.executeQuery(selection);
+            while(rs.next()) {
+            boolean tf = rs.getBoolean("IS_COUNTER");
+           al4.add(tf);
+            
+            
+            }
+            
+           
+            
+        } catch (ClassNotFoundException | SQLException e) {
+            String a = e.getMessage();
+        }
+             
+    }
     /**
      * @param args the command line arguments
      */
@@ -523,6 +612,7 @@ String updation1 = "UPDATE SASHA.PAYMENT_DETAILS SET COUNTER_DIFFERENCE = %f, TO
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

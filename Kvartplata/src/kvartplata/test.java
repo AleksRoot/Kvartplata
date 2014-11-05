@@ -19,28 +19,13 @@ import java.util.*;
 public class test {
    
     public static void main(String[] args) {
-        Scanner robot = new Scanner(System.in);
-     double a = 5; 
-     int b;
+      
+     double a = 5.123232313; 
+     String b = "%.2f";
+     b = String.format(Locale.ENGLISH,b, a);
+    a= Double.parseDouble(b);
      System.out.println("a = " + a);
      
     
-       do {
-            System.out.println("Zminutu a?");
-            System.out.println("1.Tak");
-            System.out.println("2.Ni");
-            
-           
-            b = robot.nextInt();
-        } while (b != 1 && b != 2);
-        switch (b) {
-            case 1:
-                System.out.println("Vvedit' nove a:");
-                a = robot.nextInt();
-                break;
-            case 2:
-            break;
-        }
-        System.out.println("a = " + a);
-}
+    }
 }

@@ -28,6 +28,28 @@ public class addFlat extends javax.swing.JFrame {
     public DefaultListModel model;
     public DefaultListModel model2;
    ArrayList al = new ArrayList();
+   String Language_text;
+    
+    
+
+    addFlat(DefaultListModel model, DefaultListModel model2, String Language_text) {
+       initComponents();
+       this.Language_text = Language_text;
+       this.model = model;
+       this.model2 = model2;
+         if (Language_text == "Укр") {
+       jLabel1.setText("Введіть імя квартири:");
+       jLabel2.setText("Нове імя:");
+       cancelButton.setText("Назад");
+       
+        }
+        else {
+        jLabel1.setText("Please enter a flat name:");
+         jLabel2.setText("New name:");
+         cancelButton.setText("Back");
+        }
+    }
+    
     public void insertBase()  {
            String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -47,13 +69,6 @@ public class addFlat extends javax.swing.JFrame {
         }
    }
     
-
-    addFlat(DefaultListModel model, DefaultListModel model2) {
-       initComponents();
-       this.model = model;
-       this.model2 = model2;
-       
-    }
     public void select_counters2() {
         String driver = "org.apache.derby.jdbc.ClientDriver";//Имя драйвера
         String user = "sasha";//Логин пользователя
@@ -221,12 +236,7 @@ public class addFlat extends javax.swing.JFrame {
       f.select_flat();
        select_counters2();
        insert_counters2();
-        try {
-   Thread.sleep(1000);
-   // any action
-} catch (InterruptedException e) {
-   e.printStackTrace();
-}
+        
       this.setVisible(false);
       
       
